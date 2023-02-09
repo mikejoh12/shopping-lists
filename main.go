@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/mikejoh12/go-todo/config"
 )
 
 func main() {
@@ -22,9 +23,10 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("."))
+		config.TPL.ExecuteTemplate(w, "index.gohtml", nil)
 	})
 
+	r.Mount("/auth", authResource{}.Routes())
 	r.Mount("/users", usersResource{}.Routes())
 	r.Mount("/todos", todosResource{}.Routes())
 
