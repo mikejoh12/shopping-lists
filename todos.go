@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/mikejoh12/go-todo/config"
+	"github.com/mikejoh12/go-todo/models"
 )
 
 type todosResource struct{}
@@ -27,11 +28,23 @@ func (rs todosResource) Routes() chi.Router {
 }
 
 func (rs todosResource) List(w http.ResponseWriter, r *http.Request) {
-	config.TPL.ExecuteTemplate(w, "todos.gohtml", nil)
+	todos, err := models.AllTodos()
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	config.TPL.ExecuteTemplate(w, "todos.gohtml", todos)
 }
 
 func (rs todosResource) Create(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Adding a new todo")
+	name := r.FormValue("todo")
+	fmt.Println("Adding a new todo. Name:", name)
+	err := models.AddTodo(name)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
 	http.Redirect(w, r, "/todos", http.StatusSeeOther)
 }
 

@@ -6,10 +6,9 @@
 <body>
 
 <h1>List of Todos</h1>
-<ul>
-<li>Mow grass</li>
-<li>Learn MongoDB</li>
-<li>Build a TODO app</li>
+{{ range . }}
+<li>{{.Name}}</li>
+{{ end }}
 </ul>
 
 <form action="/todos" method="post">
