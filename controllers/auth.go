@@ -1,4 +1,4 @@
-package main
+package controllers
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type authResource struct{}
+type AuthResource struct{}
 
-func (rs authResource) Routes() chi.Router {
+func (rs AuthResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Post("/login", rs.Login) // POST /users - create a new user and persist it
@@ -17,7 +17,7 @@ func (rs authResource) Routes() chi.Router {
 	return r
 }
 
-func (rs authResource) Login(w http.ResponseWriter, r *http.Request) {
+func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("User is logging in")
-	http.Redirect(w, r, "/todos", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

@@ -7,7 +7,11 @@
 
 <h1>List of Todos</h1>
 {{ range . }}
-<li>{{.Name}}</li>
+<li>{{.Name}}
+<a href="/todos/remove?id={{.ID.Hex}}">
+   <button>Remove</button>
+</a>
+ </li>
 {{ end }}
 </ul>
 
@@ -20,8 +24,8 @@
   </div>
 </form>
 
-<a href="/">
-   <button>Log out</button>
+<a href="/login">
+   <button>Log in</button>
 </a>
 </body>
 </html>

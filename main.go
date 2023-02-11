@@ -1,9 +1,3 @@
-// Todos Resource
-// ==============
-// This example demonstrates a project structure that defines a subrouter and its
-// handlers on a struct, and mounting them as subrouters to a parent router.
-// See also _examples/rest for an in-depth example of a REST service, and apply
-// those same patterns to this structure.
 package main
 
 import (
@@ -11,7 +5,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/mikejoh12/go-todo/config"
+	"github.com/mikejoh12/go-todo/controllers"
+	"github.com/mikejoh12/go-todo/view"
 )
 
 func main() {
@@ -22,13 +17,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		config.TPL.ExecuteTemplate(w, "index.gohtml", nil)
-	})
+	r.Get("/", view.TodosView)
+	r.Get("/login", view.Login)
 
-	r.Mount("/auth", authResource{}.Routes())
-	r.Mount("/users", usersResource{}.Routes())
-	r.Mount("/todos", todosResource{}.Routes())
+	r.Mount("/auth", controllers.AuthResource{}.Routes())
+	r.Mount("/users", controllers.UsersResource{}.Routes())
+	r.Mount("/todos", controllers.TodosResource{}.Routes())
 
 	http.ListenAndServe(":3333", r)
 }
