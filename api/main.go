@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/mikejoh12/go-todo/controllers"
-	"github.com/mikejoh12/go-todo/view"
 )
 
 func main() {
@@ -19,13 +18,9 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	r.Get("/", view.TodosView)
-	r.Get("/login", view.Login)
-	r.Get("/register", view.Register)
-
-	r.Mount("/auth", controllers.AuthResource{}.Routes())
-	r.Mount("/users", controllers.UsersResource{}.Routes())
-	r.Mount("/todos", controllers.TodosResource{}.Routes())
+	r.Mount("/api/auth", controllers.AuthResource{}.Routes())
+	r.Mount("/api/users", controllers.UsersResource{}.Routes())
+	r.Mount("/api/todos", controllers.TodosResource{}.Routes())
 
 	http.ListenAndServe(":8080", r)
 }

@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/mikejoh12/go-todo/models"
-	"github.com/mikejoh12/go-todo/view"
 )
 
 type TodosResource struct{}
@@ -16,7 +15,6 @@ func (rs TodosResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.Get("/", view.TodosView)
 	r.Post("/", rs.Create)
 	r.Get("/remove", rs.Delete)
 
