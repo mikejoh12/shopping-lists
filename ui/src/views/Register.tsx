@@ -8,6 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 type Inputs = {
   username: string;
   password: string;
+  passwordConfirm: string;
 };
 
 export default function Login() {
@@ -31,7 +32,7 @@ export default function Login() {
         gutterBottom
         textAlign={"center"}
       >
-        Login
+        Register
       </Typography>
       <Grid2
         container
@@ -60,10 +61,18 @@ export default function Login() {
             {...register("password", { required: true })}
           />
         </Grid2>
+        <Grid2>
+          <TextField
+            id="passwordConfirm"
+            label="Confirm Password"
+            variant="outlined"
+            {...register("passwordConfirm", { required: true })}
+          />
+        </Grid2>
 
         <Grid2>
           <Button type="submit" variant="contained">
-            Login
+            Create Account
           </Button>
         </Grid2>
       </Grid2>

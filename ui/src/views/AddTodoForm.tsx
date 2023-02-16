@@ -1,5 +1,4 @@
-import { Button, Grid } from "@mui/material";
-import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAddTodoMutation } from "../store/todos";
@@ -13,6 +12,7 @@ export default function AddTodoForm() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -20,6 +20,7 @@ export default function AddTodoForm() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
+    reset()
     addTodo({ name: data.newTodo });
   };
 
