@@ -6,11 +6,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { api, useDeleteTodoMutation } from "../store/todos";
 import AddTodoForm from "./AddTodoForm";
-import { ListItemButton } from "@mui/material";
+import { IconButton, ListItemButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Todos() {
   const { data: todos, isLoading } = api.useGetAllTodosQuery();
-  console.log(todos);
 
   const [
     deleteTodo, // This is the mutation trigger
@@ -51,9 +51,10 @@ export default function Todos() {
                 {todos?.map((todo) => (
                   <ListItem disablePadding key={todo.id}>
                     <ListItemText primary={todo.name} />
-                    <ListItemButton onClick={() => removeTodo(todo.id)}>
-                      Remove
-                    </ListItemButton>
+
+                    <IconButton edge="end" aria-label="delete" onClick={() => removeTodo(todo.id)}>
+                      <DeleteIcon />
+                    </IconButton>
                   </ListItem>
                 ))}
               </List>

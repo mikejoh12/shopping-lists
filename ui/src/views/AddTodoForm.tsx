@@ -1,5 +1,9 @@
+import { Button, Grid } from "@mui/material";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAddTodoMutation } from "../store/todos";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 type Inputs = {
   newTodo: string;
@@ -21,13 +25,31 @@ export default function AddTodoForm() {
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Grid2
+      container
+      component="form"
+      noValidate
+      autoComplete="off"
+      justifyContent="center"
+      alignItems="center"
+      spacing={2}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       {/* register your input into the hook by invoking the "register" function */}
-      <input {...register("newTodo", { required: true })} />
-      {/* errors will return when field validation fails  */}
-      {errors.newTodo && <span>This field is required</span>}
+      <Grid2>
+        <TextField
+          id="outlined-basic"
+          label="New todo"
+          variant="outlined"
+          {...register("newTodo", { required: true })}
+        />
+      </Grid2>
 
-      <input type="submit" />
-    </form>
+      <Grid2>
+        <Button type="submit" variant="contained">
+          Add todo
+        </Button>
+      </Grid2>
+    </Grid2>
   );
 }
