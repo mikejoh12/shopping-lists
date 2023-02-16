@@ -4,6 +4,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
+import Box from "@mui/material/Box";
 
 type Inputs = {
   username: string;
@@ -24,9 +25,9 @@ export default function Login() {
   };
 
   return (
-    <>
+    <Box>
       <Typography
-        variant="h1"
+        variant="h3"
         component="div"
         gutterBottom
         textAlign={"center"}
@@ -67,6 +68,6 @@ export default function Login() {
           </Button>
         </Grid2>
       </Grid2>
-    </>
+    </Box>
   );
 }

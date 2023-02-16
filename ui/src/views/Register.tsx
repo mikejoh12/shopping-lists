@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <>
       <Typography
-        variant="h1"
+        variant="h3"
         component="div"
         gutterBottom
         textAlign={"center"}

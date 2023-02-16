@@ -24,15 +24,8 @@ export default function Todos() {
 
   return (
     <>
-      <Typography
-        variant="h1"
-        component="div"
-        gutterBottom
-        textAlign={"center"}
-      >
-        Go Todo List
-      </Typography>
-      <Box sx={{ height: 400, width: "50%", margin: "auto" }}>
+
+      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4}}>
         {isLoading ? (
           <Typography variant="h3" component="div" gutterBottom>
             Loading
