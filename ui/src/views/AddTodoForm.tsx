@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAddTodoMutation } from "../store/todos";
+import { useAddTodoMutation } from "../store/todosApi";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 type Inputs = {
@@ -20,8 +20,8 @@ export default function AddTodoForm() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    reset()
     addTodo({ name: data.newTodo });
+    reset();
   };
 
   return (

@@ -4,6 +4,7 @@ import Login from "./views/Login";
 import Todos from "./views/Todos";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
+import Landing from "./views/Landing";
 
 const router = createBrowserRouter([
   {
@@ -11,16 +12,20 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <Landing />,
+      },
+      {
+        path: "/todos",
         element: <Todos />,
       },
       {
         path: "/login",
-        element: <Login />
+        element: <Login />,
       },
       {
         path: "/register",
-        element: <Register />
-      }
+        element: <Register />,
+      },
     ],
   },
 ]);

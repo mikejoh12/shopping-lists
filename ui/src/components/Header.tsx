@@ -11,7 +11,7 @@ export const HeaderLayout = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Go Todo List
             </Typography>
-            <Button color="inherit" href="/">
+            <Button color="inherit" href="/todos">
               Todos
             </Button>
             <Button color="inherit" href="/login">

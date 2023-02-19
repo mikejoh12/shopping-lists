@@ -4,6 +4,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useAddUserMutation } from "../store/todosApi";
 
 type Inputs = {
   username: string;
@@ -11,7 +12,9 @@ type Inputs = {
   passwordConfirm: string;
 };
 
-export default function Login() {
+export default function Register() {
+  const [addUser] = useAddUserMutation();
+
   const {
     register,
     handleSubmit,
@@ -21,6 +24,7 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
+    addUser({ username: data.username, password: data.password });
     reset();
   };
 
@@ -56,6 +60,7 @@ export default function Login() {
         <Grid2>
           <TextField
             id="password"
+            type="password"
             label="Password"
             variant="outlined"
             {...register("password", { required: true })}
@@ -64,6 +69,7 @@ export default function Login() {
         <Grid2>
           <TextField
             id="passwordConfirm"
+            type="password"
             label="Confirm Password"
             variant="outlined"
             {...register("passwordConfirm", { required: true })}

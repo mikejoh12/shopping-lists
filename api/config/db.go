@@ -10,7 +10,7 @@ import (
 )
 
 var DB *mongo.Database
-var Todos *mongo.Collection
+var Todos, Users *mongo.Collection
 
 const uri = "mongodb://localhost"
 
@@ -27,5 +27,6 @@ func init() {
 
 	DB = client.Database("go-todo")
 	Todos = client.Database("go-todo").Collection("todos")
+	Users = client.Database("go-todo").Collection("users")
 }
 

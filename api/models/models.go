@@ -15,6 +15,12 @@ type Todo struct {
 	Name   		 string				`json:"name"`
 }
 
+type User struct {
+	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name   		 string				`json:"name"`
+	Password	 string				`json:"password"`	
+}
+
 func AllTodos() ([]Todo, error) {
 	cursor, err := config.Todos.Find(context.TODO(), bson.M{})
 	if err != nil {
@@ -43,6 +49,14 @@ func RemoveTodo(id string) error {
 		return err
 	}
 	_, err = config.Todos.DeleteOne(context.TODO(), bson.M{"_id": objId})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddUser(u User) error {
+	_, err := config.Users.InsertOne(context.TODO(), u)
 	if err != nil {
 		return err
 	}

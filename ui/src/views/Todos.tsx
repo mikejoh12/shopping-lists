@@ -4,10 +4,10 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { api, useDeleteTodoMutation } from "../store/todos";
+import { api, useDeleteTodoMutation } from "../store/todosApi";
 import AddTodoForm from "./AddTodoForm";
-import { IconButton, ListItemButton } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Todos() {
   const { data: todos, isLoading } = api.useGetAllTodosQuery();
@@ -24,8 +24,7 @@ export default function Todos() {
 
   return (
     <>
-
-      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4}}>
+      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4 }}>
         {isLoading ? (
           <Typography variant="h3" component="div" gutterBottom>
             Loading
@@ -45,7 +44,11 @@ export default function Todos() {
                   <ListItem disablePadding key={todo.id}>
                     <ListItemText primary={todo.name} />
 
-                    <IconButton edge="end" aria-label="delete" onClick={() => removeTodo(todo.id)}>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeTodo(todo.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </ListItem>

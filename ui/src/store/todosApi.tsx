@@ -6,13 +6,18 @@ export interface Todo {
   name: string;
 }
 
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
 type TodosResponse = Todo[];
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: "todosApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Todo"],
+  tagTypes: ["Todo", "User"],
   endpoints: (builder) => ({
     getAllTodos: builder.query<TodosResponse, void>({
       query: () => "todos",
@@ -40,6 +45,26 @@ export const api = createApi({
       },
       invalidatesTags: ["Todo"],
     }),
+    addUser: builder.mutation<LoginRequest, Partial<LoginRequest>>({
+      query(body) {
+        return {
+          url: `auth/register`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
+    loginUser: builder.mutation<LoginRequest, Partial<LoginRequest>>({
+      query(body) {
+        return {
+          url: `auth/login`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -49,4 +74,6 @@ export const {
   useGetAllTodosQuery,
   useAddTodoMutation,
   useDeleteTodoMutation,
+  useAddUserMutation,
+  useLoginUserMutation
 } = api;
