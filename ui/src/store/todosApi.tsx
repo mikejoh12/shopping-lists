@@ -11,6 +11,11 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterUserRequest {
+  username: string;
+  password: string;
+}
+
 type TodosResponse = Todo[];
 
 // Define a service using a base URL and expected endpoints
@@ -45,7 +50,10 @@ export const api = createApi({
       },
       invalidatesTags: ["Todo"],
     }),
-    addUser: builder.mutation<LoginRequest, Partial<LoginRequest>>({
+    addUser: builder.mutation<
+      RegisterUserRequest,
+      Partial<RegisterUserRequest>
+    >({
       query(body) {
         return {
           url: `auth/register`,
@@ -65,6 +73,15 @@ export const api = createApi({
       },
       invalidatesTags: ["User"],
     }),
+    logoutUser: builder.mutation<void, void>({
+      query() {
+        return {
+          url: `auth/logout`,
+          method: "POST",
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -75,5 +92,6 @@ export const {
   useAddTodoMutation,
   useDeleteTodoMutation,
   useAddUserMutation,
-  useLoginUserMutation
+  useLoginUserMutation,
+  useLogoutUserMutation,
 } = api;

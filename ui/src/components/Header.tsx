@@ -1,8 +1,17 @@
 import { Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Box, AppBar, Toolbar, Typography } from "@mui/material";
+import { useLogoutUserMutation } from "../store/todosApi";
 
 export const HeaderLayout = () => {
+  function handleLogout(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    console.log("Logging out");
+    logoutUser();
+  }
+
+  const [logoutUser] = useLogoutUserMutation();
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -19,6 +28,9 @@ export const HeaderLayout = () => {
             </Button>
             <Button color="inherit" href="/register">
               Register
+              <Button color="inherit" onClick={(e) => handleLogout(e)}>
+                Log out
+              </Button>
             </Button>
           </Toolbar>
         </AppBar>

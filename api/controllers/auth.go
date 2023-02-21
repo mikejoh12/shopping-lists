@@ -55,6 +55,7 @@ func (rs AuthResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Post("/login", rs.Login)
+	r.Post("/logout", rs.Logout)
 	r.Post("/register", rs.Register)
 	return r
 }
@@ -102,6 +103,19 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(struct{
 		Username string
 		}{u.Name})
+}
+
+func (rs AuthResource) Logout(w http.ResponseWriter, r *http.Request) {
+	c := &http.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Path:     "/",
+		Expires: time.Unix(0, 0),
+	
+		HttpOnly: true,
+	}
+	
+	http.SetCookie(w, c)
 }
 
 func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
