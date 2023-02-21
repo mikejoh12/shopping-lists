@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useAddUserMutation } from "../store/todosApi";
 
 type Inputs = {
@@ -18,9 +18,14 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    control,
+    watch,
     reset,
     formState: { errors },
   } = useForm<Inputs>();
+
+  const password = React.useRef({});
+  password.current = watch("password");
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
@@ -58,21 +63,55 @@ export default function Register() {
           />
         </Grid2>
         <Grid2>
-          <TextField
-            id="password"
-            type="password"
-            label="Password"
-            variant="outlined"
-            {...register("password", { required: true })}
+          <Controller
+            name="password"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="Password"
+                variant="filled"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+                type="password"
+              />
+            )}
+            rules={{
+              required: "Password required",
+              minLength: {
+                value: 6,
+                message: "Password needs to be minimum 6 characters.",
+              },
+            }}
           />
         </Grid2>
         <Grid2>
-          <TextField
-            id="passwordConfirm"
-            type="password"
-            label="Confirm Password"
-            variant="outlined"
-            {...register("passwordConfirm", { required: true })}
+          <Controller
+            name="passwordConfirm"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="Confirm Password"
+                variant="filled"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+                type="password"
+              />
+            )}
+            rules={{
+              required: "Password required",
+              minLength: {
+                value: 6,
+                message: "Password needs to be minimum 6 characters.",
+              },
+              validate: (value) =>
+                value === password.current || "The passwords do not match",
+            }}
           />
         </Grid2>
 
