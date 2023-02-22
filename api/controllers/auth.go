@@ -27,7 +27,27 @@ type Credentials struct {
 var tokenAuth *jwtauth.JWTAuth
 
 func init() {
-	tokenAuth = jwtauth.New("HS256", []byte("secret"), nil)
+	tokenAuth = jwtauth.New("HS256", []byte("secret-modify-this"), nil)
+}
+
+func (rs AuthResource) Routes() chi.Router {
+	r := chi.NewRouter()
+
+	// Protected routes
+	r.Group(func(r chi.Router) {
+		r.Use(jwtauth.Verifier(tokenAuth))
+		r.Use(jwtauth.Authenticator)
+
+		r.Post("/logout", rs.Logout)
+	})
+
+	// Public routes
+	r.Group(func(r chi.Router) {
+		r.Post("/login", rs.Login)
+		r.Post("/register", rs.Register)
+	})
+
+	return r
 }
 
 // HashPassword is used to encrypt the password before it is stored in the DB
@@ -51,16 +71,6 @@ func GenerateJWT(userId string) (string, error) {
 		return "", err
 	}
  	return tokenString, nil
-}
-
-
-func (rs AuthResource) Routes() chi.Router {
-	r := chi.NewRouter()
-
-	r.Post("/login", rs.Login)
-	r.Post("/logout", rs.Logout)
-	r.Post("/register", rs.Register)
-	return r
 }
 
 func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +98,6 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Successful login. Generating JWT")
 	j, err := GenerateJWT(u.ID.Hex())
 	if err != nil {
 		log.Println(err)
