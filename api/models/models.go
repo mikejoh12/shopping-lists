@@ -13,16 +13,17 @@ import (
 type Todo struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name   		 string				`json:"name"`
+	Owner		 primitive.ObjectID `bson:"ownerId"`
 }
 
 type User struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name   		 string				`json:"name"`
-	Password	 string				`json:"password"`	
+	Password	 string				`json:"password"`
 }
 
-func AllTodos() ([]Todo, error) {
-	cursor, err := config.Todos.Find(context.TODO(), bson.M{})
+func AllTodos(objId primitive.ObjectID) ([]Todo, error) {
+	cursor, err := config.Todos.Find(context.TODO(), bson.M{"ownerId": objId})
 	if err != nil {
 		return nil, err
 	}
@@ -34,9 +35,8 @@ func AllTodos() ([]Todo, error) {
 	return results, nil
 }
 
-func AddTodo(name string) error {
-	newTodo := Todo{Name: name}
-	_, err := config.Todos.InsertOne(context.TODO(), newTodo)
+func AddTodo(t Todo) error {
+	_, err := config.Todos.InsertOne(context.TODO(), t)
 	if err != nil {
 		return err
 	}

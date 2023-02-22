@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/mikejoh12/go-todo/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type TodosResource struct{}
@@ -31,7 +32,14 @@ func (rs TodosResource) Routes() chi.Router {
 }
 
 func (rs TodosResource) Get(w http.ResponseWriter, r *http.Request) {
-	todos, err := models.AllTodos()
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+
+	}
+
+	todos, err := models.AllTodos(objId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -49,8 +57,17 @@ func (rs TodosResource) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 	}
 
-	fmt.Println("Adding a new todo. Name:", t.Name)
-	err := models.AddTodo(t.Name)
+	_, claims, _ := jwtauth.FromContext(r.Context())
+
+	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+
+	}
+	t.Owner = objId
+
+	fmt.Println("Adding a new todo:", t)
+	err = models.AddTodo(t)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
