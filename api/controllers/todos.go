@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/mikejoh12/go-todo/models"
 )
 
@@ -14,7 +15,8 @@ type TodosResource struct{}
 // Routes creates a REST router for the todos resource
 func (rs TodosResource) Routes() chi.Router {
 	r := chi.NewRouter()
-	// r.Use() // some middleware..
+	r.Use(jwtauth.Verifier(tokenAuth))
+	r.Use(jwtauth.Authenticator)
 
 	r.Get("/", rs.Get)
 	r.Post("/", rs.Create)

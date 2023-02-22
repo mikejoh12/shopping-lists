@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/golang-jwt/jwt"
+	"github.com/go-chi/jwtauth/v5"
+
 	"github.com/mikejoh12/go-todo/config"
 	"github.com/mikejoh12/go-todo/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,7 +24,11 @@ type Credentials struct {
 	Username string `json:"username"`
 }
 
+var tokenAuth *jwtauth.JWTAuth
 
+func init() {
+	tokenAuth = jwtauth.New("HS256", []byte("secret"), nil)
+}
 
 // HashPassword is used to encrypt the password before it is stored in the DB
 func HashPassword(password string) (string, error) {
@@ -37,12 +42,10 @@ func HashPassword(password string) (string, error) {
 
 // GenerateJWT creates a token container a userId and expires time
 func GenerateJWT(userId string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
 		"userId": userId,
 		"expires": time.Now().Add(time.Minute * 5).Unix(),
 	})
-
-	tokenString, err := token.SignedString([]byte("TopSecretPassword"))
 
 	if err != nil {
 		return "", err
