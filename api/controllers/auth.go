@@ -14,6 +14,7 @@ import (
 	"github.com/mikejoh12/go-todo/config"
 	"github.com/mikejoh12/go-todo/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -153,6 +154,13 @@ func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	u := models.User{
 		Name: c.Username,
 		Password: h,
+		TodoLists: []models.TodoList{
+			{
+				ID: primitive.NewObjectID(),
+				Name: "Grocery",
+				Items: make([]models.TodoItem, 0),
+			},
+		},
 	}
 
 	err = models.AddUser(u)

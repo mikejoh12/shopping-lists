@@ -2,8 +2,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export interface Todo {
+  id?:  number;
+  name: string;
+}
+
+export interface TodoList {
   id?: number;
   name: string;
+  items: Todo[];
 }
 
 export interface LoginRequest {
@@ -16,7 +22,9 @@ export interface RegisterUserRequest {
   password: string;
 }
 
-type TodosResponse = Todo[];
+type TodosResponse = {
+    todolists:  TodoList[];
+}
 
 // Define a service using a base URL and expected endpoints
 export const api = createApi({

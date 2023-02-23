@@ -40,7 +40,7 @@ export default function Todos() {
               }}
             >
               <List>
-                {todos?.map((todo) => (
+                {todos?.todolists[0]?.items.map((todo) => (
                   <ListItem disablePadding key={todo.id}>
                     <ListItemText primary={todo.name} />
 

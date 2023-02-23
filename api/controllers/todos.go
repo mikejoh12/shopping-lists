@@ -38,7 +38,7 @@ func (rs TodosResource) Get(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 
 	}
-
+	
 	todos, err := models.AllTodos(objId)
 	if err != nil {
 		fmt.Println(err)
@@ -52,22 +52,21 @@ func (rs TodosResource) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rs TodosResource) Create(w http.ResponseWriter, r *http.Request) {
-	var t models.Todo
+	var t models.TodoItem
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 	}
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
-
-	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
-
+		return
 	}
-	t.Owner = objId
 
 	fmt.Println("Adding a new todo:", t)
-	err = models.AddTodo(t)
+	err = models.AddTodo(t, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
