@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Box, AppBar, Toolbar, Typography } from "@mui/material";
-import { useLogoutUserMutation } from "../store/todosApi";
+import { useLogoutUserMutation } from "../store/api";
 
 export const HeaderLayout = () => {
   function handleLogout(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -18,10 +18,10 @@ export const HeaderLayout = () => {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Go Todo List
+              Shopping Lists
             </Typography>
             <Button color="inherit" href="/todos">
-              Todos
+              Lists
             </Button>
             <Button color="inherit" href="/login">
               Login

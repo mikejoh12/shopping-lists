@@ -152,15 +152,9 @@ func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := models.User{
+		ID: primitive.NewObjectID(),
 		Name: c.Username,
 		Password: h,
-		TodoLists: []models.TodoList{
-			{
-				ID: primitive.NewObjectID(),
-				Name: "Grocery",
-				Items: make([]models.TodoItem, 0),
-			},
-		},
 	}
 
 	err = models.AddUser(u)

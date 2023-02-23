@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
-import { useLoginUserMutation } from "../store/todosApi";
+import { useLoginUserMutation } from "../store/api";
 
 type Inputs = {
   username: string;

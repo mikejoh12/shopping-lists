@@ -4,7 +4,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useAddUserMutation } from "../store/todosApi";
+import { useAddUserMutation } from "../store/api";
 
 type Inputs = {
   username: string;

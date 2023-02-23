@@ -4,8 +4,8 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { api, useDeleteTodoMutation } from "../store/todosApi";
-import AddTodoForm from "./AddTodoForm";
+import { api, useDeleteListItemMutation } from "../store/api";
+import AddTodoForm from "./AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -15,7 +15,7 @@ export default function Todos() {
   const [
     deleteTodo, // This is the mutation trigger
     { isLoading: isDeleteUpdating }, // This is the destructured mutation result
-  ] = useDeleteTodoMutation();
+  ] = useDeleteListItemMutation();
 
   function removeTodo(t: number | undefined) {
     console.log("Removing todo:", t);
@@ -40,7 +40,7 @@ export default function Todos() {
               }}
             >
               <List>
-                {todos?.todolists[0]?.items.map((todo) => (
+                {todos?.items?.map((todo) => (
                   <ListItem disablePadding key={todo.id}>
                     <ListItemText primary={todo.name} />
 

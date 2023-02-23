@@ -10,7 +10,7 @@ import (
 )
 
 var DB *mongo.Database
-var Todos, Users *mongo.Collection
+var ShoppingLists, Users *mongo.Collection
 
 const uri = "mongodb://localhost"
 
@@ -26,7 +26,7 @@ func init() {
 	fmt.Println("Successfully connected and pinged.")
 
 	DB = client.Database("go-todo")
-	Todos = client.Database("go-todo").Collection("todos")
+	ShoppingLists = client.Database("go-todo").Collection("shoppingLists")
 	Users = client.Database("go-todo").Collection("users")
 }
 

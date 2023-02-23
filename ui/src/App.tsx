@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./views/Login";
-import Todos from "./views/Todos";
+import Todos from "./views/ShoppingList";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
 import Landing from "./views/Landing";

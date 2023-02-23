@@ -1,15 +1,16 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export interface Todo {
-  id?:  number;
+export interface ListItem {
+  id?: number;
   name: string;
 }
 
-export interface TodoList {
+export interface ShoppingList {
   id?: number;
+  ownerId: number;
   name: string;
-  items: Todo[];
+  items: ListItem[];
 }
 
 export interface LoginRequest {
@@ -22,41 +23,37 @@ export interface RegisterUserRequest {
   password: string;
 }
 
-type TodosResponse = {
-    todolists:  TodoList[];
-}
-
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
-  reducerPath: "todosApi",
+  reducerPath: "shoppingListApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Todo", "User"],
+  tagTypes: ["ShoppingList", "User"],
   endpoints: (builder) => ({
-    getAllTodos: builder.query<TodosResponse, void>({
-      query: () => "todos",
-      providesTags: ["Todo"],
+    getAllTodos: builder.query<ShoppingList, void>({
+      query: () => "lists",
+      providesTags: ["ShoppingList"],
     }),
-    addTodo: builder.mutation<Todo, Partial<Todo>>({
+    addListItem: builder.mutation<ListItem, Partial<ListItem>>({
       query(body) {
         return {
-          url: `todos`,
+          url: `lists`,
           method: "POST",
           body,
         };
       },
-      invalidatesTags: ["Todo"],
+      invalidatesTags: ["ShoppingList"],
     }),
-    deleteTodo: builder.mutation<
+    deleteListItem: builder.mutation<
       { success: boolean; id: number },
       number | undefined
     >({
       query(id) {
         return {
-          url: `todos/${id}`,
+          url: `lists/${id}`,
           method: "DELETE",
         };
       },
-      invalidatesTags: ["Todo"],
+      invalidatesTags: ["ShoppingList"],
     }),
     addUser: builder.mutation<
       RegisterUserRequest,
@@ -97,8 +94,8 @@ export const api = createApi({
 // auto-generated based on the defined endpoints
 export const {
   useGetAllTodosQuery,
-  useAddTodoMutation,
-  useDeleteTodoMutation,
+  useAddListItemMutation,
+  useDeleteListItemMutation,
   useAddUserMutation,
   useLoginUserMutation,
   useLogoutUserMutation,

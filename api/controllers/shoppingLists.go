@@ -11,35 +11,33 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type TodosResource struct{}
+type ShoppingListsResource struct{}
 
-// Routes creates a REST router for the todos resource
-func (rs TodosResource) Routes() chi.Router {
+func (rs ShoppingListsResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	r.Use(jwtauth.Verifier(tokenAuth))
 	r.Use(jwtauth.Authenticator)
 
 	r.Get("/", rs.Get)
 	r.Post("/", rs.Create)
-	r.Get("/remove", rs.Delete)
 
 	r.Route("/{id}", func(r chi.Router) {
-		r.Put("/", rs.Update)
 		r.Delete("/", rs.Delete)
 	})
 
 	return r
 }
 
-func (rs TodosResource) Get(w http.ResponseWriter, r *http.Request) {
+func (rs ShoppingListsResource) Get(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
-
+		return
 	}
 	
-	todos, err := models.AllTodos(objId)
+	todos, err := models.AllShoppingLists(objId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -47,14 +45,17 @@ func (rs TodosResource) Get(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(todos); err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 	}
 }
 
-func (rs TodosResource) Create(w http.ResponseWriter, r *http.Request) {
-	var t models.TodoItem
+func (rs ShoppingListsResource) Create(w http.ResponseWriter, r *http.Request) {
+	var t models.ListItem
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
 	}
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
@@ -66,7 +67,7 @@ func (rs TodosResource) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Adding a new todo:", t)
-	err = models.AddTodo(t, ownerId)
+	err = models.AddListItem(t, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -76,15 +77,22 @@ func (rs TodosResource) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (rs TodosResource) Update(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("todo update"))
-}
+func (rs ShoppingListsResource) Delete(w http.ResponseWriter, r *http.Request) {
+	todoId := chi.URLParam(r, "id")
 
-func (rs TodosResource) Delete(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	err := models.RemoveTodo(id)
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	err = models.RemoveTodo(todoId, ownerId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusNoContent)
 }

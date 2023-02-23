@@ -19,7 +19,7 @@ func main() {
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	r.Mount("/api/auth", controllers.AuthResource{}.Routes())
-	r.Mount("/api/todos", controllers.TodosResource{}.Routes())
+	r.Mount("/api/lists", controllers.ShoppingListsResource{}.Routes())
 
 	http.ListenAndServe(":8080", r)
 }
