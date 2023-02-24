@@ -8,7 +8,7 @@ type Inputs = {
   newTodo: string;
 };
 
-export default function AddTodoForm() {
+export default function ListItemForm() {
   const {
     register,
     handleSubmit,

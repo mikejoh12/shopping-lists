@@ -23,12 +23,26 @@ export interface RegisterUserRequest {
   password: string;
 }
 
+export interface ShoppingList {
+  name: string;
+}
+
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: "shoppingListApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["ShoppingList", "User"],
   endpoints: (builder) => ({
+    addList: builder.mutation<ShoppingList, Partial<ShoppingList>>({
+      query(body) {
+        return {
+          url: `lists`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
     getAllListItems: builder.query<ShoppingList, void>({
       query: () => "lists/items",
       providesTags: ["ShoppingList"],
@@ -93,6 +107,7 @@ export const api = createApi({
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
 export const {
+  useAddListMutation,
   useGetAllListItemsQuery,
   useAddListItemMutation,
   useDeleteListItemMutation,

@@ -23,7 +23,6 @@ export default function Login() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     loginUser(data);
     reset();
   };

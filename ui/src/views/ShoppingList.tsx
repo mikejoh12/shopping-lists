@@ -5,7 +5,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { api, useDeleteListItemMutation } from "../store/api";
-import AddTodoForm from "./AddListItemForm";
+import AddListItemForm from "./AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListSelect from "../components/ListSelect";
@@ -59,7 +59,7 @@ export default function Todos() {
                 ))}
               </List>
             </Box>
-            <AddTodoForm />
+            <AddListItemForm />
           </>
         )}
       </Box>
