@@ -8,9 +8,11 @@ import { api, useDeleteListItemMutation } from "../store/api";
 import AddTodoForm from "./AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ListSelect from "../components/ListSelect";
+import NewListDialog from "../components/NewListDialog";
 
 export default function Todos() {
-  const { data: todos, isLoading } = api.useGetAllTodosQuery();
+  const { data: todos, isLoading } = api.useGetAllListItemsQuery();
 
   const [
     deleteTodo, // This is the mutation trigger
@@ -24,6 +26,8 @@ export default function Todos() {
 
   return (
     <>
+      <ListSelect />
+      <NewListDialog />
       <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4 }}>
         {isLoading ? (
           <Typography variant="h3" component="div" gutterBottom>

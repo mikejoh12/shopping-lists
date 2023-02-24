@@ -18,8 +18,10 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 	r.Use(jwtauth.Verifier(tokenAuth))
 	r.Use(jwtauth.Authenticator)
 
-	r.Get("/", rs.Get)
-	r.Post("/", rs.Create)
+	r.Get("/items", rs.Get)
+
+	r.Post("/", rs.CreateList) // Create a new list
+	r.Post("/items", rs.CreateListItem) // Create a list item
 
 	r.Route("/{id}", func(r chi.Router) {
 		r.Delete("/", rs.Delete)
@@ -50,7 +52,34 @@ func (rs ShoppingListsResource) Get(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (rs ShoppingListsResource) Create(w http.ResponseWriter, r *http.Request) {
+func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Request) {
+	l := struct{Name string}{}
+	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("Adding a new list. Name:", l.Name)
+	err = models.AddShoppingList(l.Name, ownerId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Request) {
 	var t models.ListItem
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		fmt.Println(err)

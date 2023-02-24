@@ -53,7 +53,7 @@ func AddListItem(t ListItem, userId primitive.ObjectID) error {
 	return nil
 }
 
-func AddTodoList(name string, ownerId primitive.ObjectID) error {
+func AddShoppingList(name string, ownerId primitive.ObjectID) error {
 	t := ShoppingList{
 		ID: primitive.NewObjectID(),
 		OwnerId: ownerId,
@@ -67,7 +67,6 @@ func AddTodoList(name string, ownerId primitive.ObjectID) error {
 	return nil
 }
 
-// TODO 
 func RemoveTodo(todoId string, ownerId primitive.ObjectID) error {
 	objId, err := primitive.ObjectIDFromHex(todoId)
 	if err != nil {
@@ -95,7 +94,7 @@ func AddUser(u User) error {
 		return err
 	}
 
-	err = AddTodoList(u.Name, u.ID)
+	err = AddShoppingList(u.Name, u.ID)
 	if err != nil {
 		return err
 	}

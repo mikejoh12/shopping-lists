@@ -29,14 +29,14 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["ShoppingList", "User"],
   endpoints: (builder) => ({
-    getAllTodos: builder.query<ShoppingList, void>({
-      query: () => "lists",
+    getAllListItems: builder.query<ShoppingList, void>({
+      query: () => "lists/items",
       providesTags: ["ShoppingList"],
     }),
     addListItem: builder.mutation<ListItem, Partial<ListItem>>({
       query(body) {
         return {
-          url: `lists`,
+          url: `lists/items`,
           method: "POST",
           body,
         };
@@ -93,7 +93,7 @@ export const api = createApi({
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
 export const {
-  useGetAllTodosQuery,
+  useGetAllListItemsQuery,
   useAddListItemMutation,
   useDeleteListItemMutation,
   useAddUserMutation,
