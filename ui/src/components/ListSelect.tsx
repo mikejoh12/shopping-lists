@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { api, useGetAllListItemsQuery } from "../store/api";
+import { api } from "../store/api";
 import { ShoppingList } from "../store/api";
 import { setSelectedListId } from "../features/auth/userSlice";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,7 @@ export default function ListSelect() {
   const [list, setList] = React.useState("");
   const dispatch = useDispatch();
 
-  const { data: shoppingLists, isLoading } = api.useGetAllListItemsQuery();
+  const { data: shoppingLists } = api.useGetAllListItemsQuery();
 
   const handleChange = (event: SelectChangeEvent) => {
     setList(event.target.value as string);
@@ -38,8 +38,6 @@ export default function ListSelect() {
               </MenuItem>
             );
           })}
-          <MenuItem value="Groceries">Groceries</MenuItem>
-          <MenuItem value="Target">Target</MenuItem>
         </Select>
       </FormControl>
     </Box>

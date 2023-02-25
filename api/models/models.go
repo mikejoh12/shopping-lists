@@ -49,15 +49,18 @@ func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 	return &results, nil
 }
 
-func AddListItem(t ListItem, userId primitive.ObjectID) error {
-	t.ID = primitive.NewObjectID()
+func AddListItem(name string, userId, listId primitive.ObjectID) error {
+	li := ListItem{
+		ID: primitive.NewObjectID(),
+		Name: name,
+	}
 
 	update := bson.M{
 		"$push": bson.M{
-			"items": t,
+			"items": li,
 		},
 	}
-	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId}, update)
+	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId, "_id": listId}, update)
 
 	if err != nil {
 		return err

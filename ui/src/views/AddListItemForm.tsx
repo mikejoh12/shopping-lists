@@ -3,12 +3,18 @@ import TextField from "@mui/material/TextField";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAddListItemMutation } from "../store/api";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
 type Inputs = {
   newTodo: string;
 };
 
 export default function ListItemForm() {
+  const selectedListId = useSelector(
+    (state: RootState) => state.user.selectedListId
+  );
+
   const {
     register,
     handleSubmit,
@@ -20,7 +26,7 @@ export default function ListItemForm() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    addTodo({ name: data.newTodo });
+    addTodo({ name: data.newTodo, listId: selectedListId });
     reset();
   };
 

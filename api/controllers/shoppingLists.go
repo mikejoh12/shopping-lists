@@ -11,6 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type NewListItemReq struct {
+	Name   		 string				`json:"name"`
+	ListId		 string				`json:"listId`
+}
+
 type ShoppingListsResource struct{}
 
 func (rs ShoppingListsResource) Routes() chi.Router {
@@ -80,8 +85,8 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 }
 
 func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Request) {
-	var t models.ListItem
-	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+	var itemData NewListItemReq
+	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
@@ -95,7 +100,14 @@ func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err = models.AddListItem(t, ownerId)
+	listId, err := primitive.ObjectIDFromHex(itemData.ListId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	err = models.AddListItem(itemData.Name, ownerId, listId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
