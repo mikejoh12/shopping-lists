@@ -5,23 +5,24 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { api, useDeleteListItemMutation } from "../store/api";
+import { useSelector } from "react-redux";
 import AddListItemForm from "./AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListSelect from "../components/ListSelect";
 import NewListDialog from "../components/NewListDialog";
+import { RootState } from "../store/store";
 
-export default function Todos() {
-  const { data: todos, isLoading } = api.useGetAllListItemsQuery();
+export default function ListItems() {
+  const { data: shoppingLists, isLoading } = api.useGetAllListItemsQuery();
+  const selectedListId = useSelector(
+    (state: RootState) => state.user.selectedListId
+  );
 
-  const [
-    deleteTodo, // This is the mutation trigger
-    { isLoading: isDeleteUpdating }, // This is the destructured mutation result
-  ] = useDeleteListItemMutation();
+  const [deleteItem] = useDeleteListItemMutation();
 
-  function removeTodo(t: number | undefined) {
-    console.log("Removing todo:", t);
-    deleteTodo(t);
+  function removeItem(t: number | undefined) {
+    deleteItem(t);
   }
 
   return (
@@ -44,19 +45,23 @@ export default function Todos() {
               }}
             >
               <List>
-                {todos?.items?.map((todo) => (
-                  <ListItem disablePadding key={todo.id}>
-                    <ListItemText primary={todo.name} />
+                {shoppingLists
+                  ?.find((list) => {
+                    return String(list.id) === selectedListId;
+                  })
+                  ?.items?.map((list) => (
+                    <ListItem disablePadding key={list.id}>
+                      <ListItemText primary={list.name} />
 
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeTodo(todo.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItem>
-                ))}
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => removeItem(list.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItem>
+                  ))}
               </List>
             </Box>
             <AddListItemForm />

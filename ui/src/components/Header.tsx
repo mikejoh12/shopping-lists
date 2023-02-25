@@ -20,7 +20,7 @@ export const HeaderLayout = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Shopping Lists
             </Typography>
-            <Button color="inherit" href="/todos">
+            <Button color="inherit" href="/lists">
               Lists
             </Button>
             <Button color="inherit" href="/login">

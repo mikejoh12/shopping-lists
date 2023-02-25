@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./views/Login";
-import Todos from "./views/ShoppingList";
+import Lists from "./views/ShoppingLists";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
 import Landing from "./views/Landing";
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
         element: <Landing />,
       },
       {
-        path: "/todos",
-        element: <Todos />,
+        path: "/lists",
+        element: <Lists />,
       },
       {
         path: "/login",

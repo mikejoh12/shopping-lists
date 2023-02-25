@@ -39,14 +39,14 @@ func (rs ShoppingListsResource) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	todos, err := models.AllShoppingLists(objId)
+	items, err := models.AllShoppingLists(objId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(todos); err != nil {
+	if err := json.NewEncoder(w).Encode(items); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 	}
@@ -95,7 +95,6 @@ func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	fmt.Println("Adding a new todo:", t)
 	err = models.AddListItem(t, ownerId)
 	if err != nil {
 		fmt.Println(err)
@@ -117,7 +116,7 @@ func (rs ShoppingListsResource) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.RemoveTodo(todoId, ownerId)
+	err = models.RemoveListItem(todoId, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)

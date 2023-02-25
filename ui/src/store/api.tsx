@@ -43,7 +43,7 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
-    getAllListItems: builder.query<ShoppingList, void>({
+    getAllListItems: builder.query<ShoppingList[], void>({
       query: () => "lists/items",
       providesTags: ["ShoppingList"],
     }),

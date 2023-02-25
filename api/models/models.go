@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mikejoh12/go-todo/config"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,18 +23,29 @@ type ShoppingList struct {
 }
 
 type User struct {
-	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name   		 string				`json:"name"`
-	Password	 string				`json:"password"`
+	ID            primitive.ObjectID 	`json:"id" bson:"_id,omitempty"`
+	Name   		  string				`json:"name"`
+	Password	  string				`json:"password"`
 }
 
 
-func AllShoppingLists(userId primitive.ObjectID) (*ShoppingList, error) {
-	cursor := config.ShoppingLists.FindOne(context.TODO(), bson.M{"ownerId": userId})
-	results := ShoppingList{}
-	if err := cursor.Decode(&results); err != nil {
+func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
+	cursor, err := config.ShoppingLists.Find(context.TODO(), bson.M{"ownerId": userId})
+	if err != nil {			
+		fmt.Println("error in find")
+		return nil, err	
+	}
+	var results []ShoppingList
+
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		fmt.Println("error in cursor")
 		return nil, err
 	}
+
+	for _, result := range results {
+		cursor.Decode(&result)
+	}
+
 	return &results, nil
 }
 
@@ -67,8 +79,8 @@ func AddShoppingList(name string, ownerId primitive.ObjectID) error {
 	return nil
 }
 
-func RemoveTodo(todoId string, ownerId primitive.ObjectID) error {
-	objId, err := primitive.ObjectIDFromHex(todoId)
+func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {
+	objId, err := primitive.ObjectIDFromHex(itemId)
 	if err != nil {
 		return err
 	}
