@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface ListItem {
   id?: number;
   name: string;
-  listId: string;
+  listId: string | null;
 }
 
 export interface ShoppingList {
@@ -17,6 +17,10 @@ export interface ShoppingList {
 export interface LoginRequest {
   username: string;
   password: string;
+}
+
+export interface UserResponse {
+  username: string
 }
 
 export interface RegisterUserRequest {
@@ -83,7 +87,7 @@ export const api = createApi({
       },
       invalidatesTags: ["User"],
     }),
-    loginUser: builder.mutation<LoginRequest, Partial<LoginRequest>>({
+    loginUser: builder.mutation<UserResponse, LoginRequest>({
       query(body) {
         return {
           url: `auth/login`,

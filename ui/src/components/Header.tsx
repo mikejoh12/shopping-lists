@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Box, AppBar, Toolbar, Typography } from "@mui/material";
 import { useLogoutUserMutation } from "../store/api";
+import { Link } from "react-router-dom";
 
 export const HeaderLayout = () => {
   function handleLogout(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -20,17 +21,17 @@ export const HeaderLayout = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Shopping Lists
             </Typography>
-            <Button color="inherit" href="/lists">
+            <Button component={Link} color="inherit" to="/lists">
               Lists
             </Button>
-            <Button color="inherit" href="/login">
+            <Button component={Link} color="inherit" to="/login">
               Login
             </Button>
-            <Button color="inherit" href="/register">
+            <Button component={Link} color="inherit" to="/register">
               Register
-              <Button color="inherit" onClick={(e) => handleLogout(e)}>
-                Log out
-              </Button>
+            <Button color="inherit" onClick={(e) => handleLogout(e)}>
+              Log out
+            </Button>
             </Button>
           </Toolbar>
         </AppBar>

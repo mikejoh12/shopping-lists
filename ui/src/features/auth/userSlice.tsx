@@ -2,19 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 type UserState = {
-  selectedListId: string;
+  name: string | null;
+  selectedListId: string | null;
 };
 
 const slice = createSlice({
   name: "user",
-  initialState: { selectedListId: "" } as UserState,
+  initialState: { name: null, selectedListId: null } as UserState,
   reducers: {
+    setCredentials: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
     setSelectedListId: (state, action: PayloadAction<string>) => {
       state.selectedListId = action.payload;
     },
   },
 });
 
-export const { setSelectedListId } = slice.actions;
+export const { setCredentials, setSelectedListId } = slice.actions;
 
 export default slice.reducer;

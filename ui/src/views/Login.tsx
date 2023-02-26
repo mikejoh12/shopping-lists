@@ -6,6 +6,8 @@ import TextField from "@mui/material/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { useLoginUserMutation } from "../store/api";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../features/auth/userSlice";
 
 type Inputs = {
   username: string;
@@ -14,17 +16,19 @@ type Inputs = {
 
 export default function Login() {
   const [loginUser] = useLoginUserMutation();
+  const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit, reset } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    loginUser(data);
-    reset();
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const user = await loginUser(data).unwrap();
+      dispatch(setCredentials(user.username));
+      console.log(user);
+      reset();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

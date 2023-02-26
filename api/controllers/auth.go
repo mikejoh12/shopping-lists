@@ -114,7 +114,7 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
     w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(struct{
-		Username string
+		Username string	`json:"username"`
 		}{u.Name})
 }
 

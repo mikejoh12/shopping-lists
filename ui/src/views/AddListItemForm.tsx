@@ -22,11 +22,11 @@ export default function ListItemForm() {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const [addTodo] = useAddListItemMutation();
+  const [addListItem] = useAddListItemMutation();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    addTodo({ name: data.newTodo, listId: selectedListId });
+    addListItem({ name: data.newTodo, listId: selectedListId });
     reset();
   };
 
