@@ -10,10 +10,10 @@ const slice = createSlice({
   name: "user",
   initialState: { name: null, selectedListId: null } as UserState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<string>) => {
+    setCredentials: (state, action: PayloadAction<string|null>) => {
       state.name = action.payload;
     },
-    setSelectedListId: (state, action: PayloadAction<string>) => {
+    setSelectedListId: (state, action: PayloadAction<string|null>) => {
       state.selectedListId = action.payload;
     },
   },

@@ -1,10 +1,10 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./views/Login";
 import Lists from "./views/ShoppingLists";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
 import Landing from "./views/Landing";
+import { RequireAuth } from "./components/RequireAuth";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +16,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/lists",
-        element: <Lists />,
+        element: (
+          <RequireAuth>
+            <Lists />
+          </RequireAuth>
+        ),
       },
       {
         path: "/login",

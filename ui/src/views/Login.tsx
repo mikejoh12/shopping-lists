@@ -7,7 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { useLoginUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../features/auth/userSlice";
+import { setCredentials } from "../features/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 type Inputs = {
   username: string;
@@ -17,6 +18,7 @@ type Inputs = {
 export default function Login() {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
@@ -26,6 +28,7 @@ export default function Login() {
       dispatch(setCredentials(user.username));
       console.log(user);
       reset();
+      navigate("/lists");
     } catch (err) {
       console.log(err);
     }

@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { api } from "../store/api";
 import { ShoppingList } from "../store/api";
-import { setSelectedListId } from "../features/auth/userSlice";
+import { setSelectedListId } from "../features/user/userSlice";
 import { useDispatch } from "react-redux";
 
 export default function ListSelect() {
