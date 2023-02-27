@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
+	"github.com/lestrrat-go/jwx/v2/jwt"
 
 	"github.com/mikejoh12/go-todo/config"
 	"github.com/mikejoh12/go-todo/models"
@@ -27,6 +28,29 @@ type Credentials struct {
 
 var tokenAuth *jwtauth.JWTAuth
 
+// Authenticator is a default authentication middleware to enforce access from the
+// Verifier middleware request context values. The Authenticator sends a 401 Unauthorized
+// response for any unverified tokens and passes the good ones through. It's just fine
+// until you decide to write something similar and customize your client response.
+func Authenticator(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, _, err := jwtauth.FromContext(r.Context())
+
+		if err != nil || token == nil || jwt.Validate(token) != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(struct{Error string `json:"error"`}{
+					Error:	"Unauthorized",		
+			})
+			return
+		}
+
+		// Token is authenticated, pass it through
+		next.ServeHTTP(w, r)
+	})
+}
+
+
 func init() {
 	tokenAuth = jwtauth.New("HS256", []byte("secret-modify-this"), nil)
 }
@@ -37,7 +61,7 @@ func (rs AuthResource) Routes() chi.Router {
 	// Protected routes
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(tokenAuth))
-		r.Use(jwtauth.Authenticator)
+		r.Use(Authenticator)
 
 		r.Post("/logout", rs.Logout)
 	})

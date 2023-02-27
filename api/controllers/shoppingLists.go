@@ -21,7 +21,7 @@ type ShoppingListsResource struct{}
 func (rs ShoppingListsResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	r.Use(jwtauth.Verifier(tokenAuth))
-	r.Use(jwtauth.Authenticator)
+	r.Use(Authenticator)
 
 	r.Get("/items", rs.Get)
 

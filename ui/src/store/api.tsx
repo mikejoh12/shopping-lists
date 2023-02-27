@@ -1,5 +1,11 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
+import { setCredentials } from "../features/user/userSlice";
 
 export interface ListItem {
   id?: number;
@@ -20,7 +26,7 @@ export interface LoginRequest {
 }
 
 export interface UserResponse {
-  username: string
+  username: string;
 }
 
 export interface RegisterUserRequest {
@@ -32,10 +38,25 @@ export interface ShoppingList {
   name: string;
 }
 
+const baseQuery = fetchBaseQuery({ baseUrl: "/api" });
+const baseQueryWithLogout: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+  console.log(result);
+  if (result.error && result.error.status === 401) {
+    api.dispatch(setCredentials(null));
+    alert("You have been logged out");
+  }
+  return result;
+};
+
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: "shoppingListApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  baseQuery: baseQueryWithLogout,
   tagTypes: ["ShoppingList", "User"],
   endpoints: (builder) => ({
     addList: builder.mutation<ShoppingList, Partial<ShoppingList>>({
