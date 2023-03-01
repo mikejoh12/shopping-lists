@@ -28,10 +28,10 @@ type Credentials struct {
 
 var tokenAuth *jwtauth.JWTAuth
 
-// Authenticator is a default authentication middleware to enforce access from the
+// Authenticator is a custom authentication middleware to enforce access from the
 // Verifier middleware request context values. The Authenticator sends a 401 Unauthorized
-// response for any unverified tokens and passes the good ones through. It's just fine
-// until you decide to write something similar and customize your client response.
+// response for any unverified tokens and passes the good ones through. It adds json
+// data to the response
 func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, _, err := jwtauth.FromContext(r.Context())
@@ -45,7 +45,6 @@ func Authenticator(next http.Handler) http.Handler {
 			return
 		}
 
-		// Token is authenticated, pass it through
 		next.ServeHTTP(w, r)
 	})
 }
@@ -75,7 +74,7 @@ func (rs AuthResource) Routes() chi.Router {
 	return r
 }
 
-// HashPassword is used to encrypt the password before it is stored in the DB
+// HashPassword is used to hash the password before it is stored in the DB
 func HashPassword(password string) (string, error) {
     bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
     if err != nil {
@@ -85,7 +84,7 @@ func HashPassword(password string) (string, error) {
     return string(bytes), nil
 }
 
-// GenerateJWT creates a token container a userId and expires time
+// GenerateJWT creates a token containing a userId and expiration time
 func GenerateJWT(userId string) (string, error) {
 	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
 		"userId": userId,
@@ -98,6 +97,7 @@ func GenerateJWT(userId string) (string, error) {
  	return tokenString, nil
 }
 
+// Login takes the credentials and returns a JWT token in a cookie
 func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	var c Credentials
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
@@ -142,6 +142,7 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 		}{u.Name})
 }
 
+// Logout deletes the cookie containing the JWT
 func (rs AuthResource) Logout(w http.ResponseWriter, r *http.Request) {
 	c := &http.Cookie{
 		Name:     "jwt",
@@ -155,6 +156,7 @@ func (rs AuthResource) Logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, c)
 }
 
+// Register takes new user info in json and creates a new user
 func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	var c Credentials
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {

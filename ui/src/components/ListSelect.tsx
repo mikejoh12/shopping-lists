@@ -13,7 +13,7 @@ export default function ListSelect() {
   const [list, setList] = React.useState("");
   const dispatch = useDispatch();
 
-  const { data: shoppingLists } = api.useGetAllListItemsQuery();
+  const { data: shoppingLists } = api.useGetAllListsQuery();
 
   const handleChange = (event: SelectChangeEvent) => {
     setList(event.target.value as string);

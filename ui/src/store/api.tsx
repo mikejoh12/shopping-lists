@@ -69,8 +69,8 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
-    getAllListItems: builder.query<ShoppingList[], void>({
-      query: () => "lists/items",
+    getAllLists: builder.query<ShoppingList[], void>({
+      query: () => "lists",
       providesTags: ["ShoppingList"],
     }),
     addListItem: builder.mutation<ListItem, Partial<ListItem>>({
@@ -89,7 +89,7 @@ export const api = createApi({
     >({
       query(id) {
         return {
-          url: `lists/${id}`,
+          url: `lists/items/${id}`,
           method: "DELETE",
         };
       },
@@ -134,7 +134,7 @@ export const api = createApi({
 // auto-generated based on the defined endpoints
 export const {
   useAddListMutation,
-  useGetAllListItemsQuery,
+  useGetAllListsQuery,
   useAddListItemMutation,
   useDeleteListItemMutation,
   useAddUserMutation,

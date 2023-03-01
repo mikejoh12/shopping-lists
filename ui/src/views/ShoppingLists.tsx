@@ -14,7 +14,7 @@ import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
 
 export default function ListItems() {
-  const { data: shoppingLists, isLoading } = api.useGetAllListItemsQuery();
+  const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
   const selectedListId = useSelector(
     (state: RootState) => state.user.selectedListId
   );

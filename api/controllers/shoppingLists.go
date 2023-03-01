@@ -13,7 +13,7 @@ import (
 
 type NewListItemReq struct {
 	Name   		 string				`json:"name"`
-	ListId		 string				`json:"listId`
+	ListId		 string				`json:"listId"`
 }
 
 type ShoppingListsResource struct{}
@@ -23,19 +23,20 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 	r.Use(jwtauth.Verifier(tokenAuth))
 	r.Use(Authenticator)
 
-	r.Get("/items", rs.Get)
+	r.Post("/", rs.CreateList)
+	r.Get("/", rs.GetLists)
 
-	r.Post("/", rs.CreateList) // Create a new list
-	r.Post("/items", rs.CreateListItem) // Create a list item
 
-	r.Route("/{id}", func(r chi.Router) {
-		r.Delete("/", rs.Delete)
+	r.Route("/items", func(r chi.Router) {
+		r.Post("/", rs.CreateListItem)
+		r.Delete("/{id}", rs.DeleteListItem)
 	})
 
 	return r
 }
 
-func (rs ShoppingListsResource) Get(w http.ResponseWriter, r *http.Request) {
+// GetLists sends all shopping lists as a json response
+func (rs ShoppingListsResource) GetLists(w http.ResponseWriter, r *http.Request) {
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
@@ -57,6 +58,7 @@ func (rs ShoppingListsResource) Get(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// CreateList creates a new shopping list from json data
 func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Request) {
 	l := struct{Name string}{}
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
@@ -73,7 +75,6 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	fmt.Println("Adding a new list. Name:", l.Name)
 	err = models.AddShoppingList(l.Name, ownerId)
 	if err != nil {
 		fmt.Println(err)
@@ -84,6 +85,7 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusCreated)
 }
 
+// CreateListItem creates a new list item from json data
 func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Request) {
 	var itemData NewListItemReq
 	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
@@ -117,7 +119,8 @@ func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (rs ShoppingListsResource) Delete(w http.ResponseWriter, r *http.Request) {
+// DeleteListItem deletes a list item based on the id
+func (rs ShoppingListsResource) DeleteListItem(w http.ResponseWriter, r *http.Request) {
 	todoId := chi.URLParam(r, "id")
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
