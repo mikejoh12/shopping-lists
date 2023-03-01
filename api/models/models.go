@@ -109,10 +109,5 @@ func AddUser(u User) error {
 		return err
 	}
 
-	err = AddShoppingList(u.Name, u.ID)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

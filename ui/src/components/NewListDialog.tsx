@@ -18,7 +18,6 @@ export default function NewListDialog() {
 
   const [addList] = useAddListMutation();
 
-
   const { control, handleSubmit } = useForm({
     defaultValues: {
       name: "",
@@ -35,13 +34,13 @@ export default function NewListDialog() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    addList(data)
+    addList(data);
     handleClose();
   };
 
   return (
     <div>
-      <Box sx={{ minWidth: 120, maxWidth: 400, margin: "auto", p: 2 }}>
+      <Box sx={{ textAlign: "center", p: 2 }}>
         <Button variant="outlined" onClick={handleClickOpen}>
           Create new list
         </Button>

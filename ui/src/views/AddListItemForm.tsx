@@ -46,7 +46,7 @@ export default function ListItemForm() {
       <Grid2>
         <TextField
           id="outlined-basic"
-          label="New todo"
+          label="Add item"
           variant="outlined"
           {...register("newTodo", { required: true })}
         />
@@ -54,7 +54,7 @@ export default function ListItemForm() {
 
       <Grid2>
         <Button type="submit" variant="contained">
-          Add todo
+          Add item
         </Button>
       </Grid2>
     </Grid2>

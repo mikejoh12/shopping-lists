@@ -31,8 +31,16 @@ export default function ListItems() {
       <NewListDialog />
       <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4 }}>
         {isLoading ? (
-          <Typography variant="h3" component="div" gutterBottom>
+          <Typography variant="h4" component="div" gutterBottom textAlign="center">
             Loading
+          </Typography>
+        ) : shoppingLists == null ? (
+          <Typography variant="h4" component="div" gutterBottom textAlign="center">
+            Please create a new list
+          </Typography>
+        ) : !selectedListId ? (
+          <Typography variant="h4" component="div" gutterBottom textAlign="center">
+            Please select a list or create a new one
           </Typography>
         ) : (
           <>

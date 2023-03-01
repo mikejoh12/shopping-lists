@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Box, AppBar, Toolbar, Typography } from "@mui/material";
-import { useLogoutUserMutation } from "../store/api";
+import { api, useLogoutUserMutation } from "../store/api";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "../features/user/userSlice";
+import { setCredentials, setSelectedListId } from "../features/user/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 
@@ -16,9 +16,10 @@ export const HeaderLayout = () => {
 
   function handleLogout(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    console.log("Logging out");
     logoutUser();
     dispatch(setCredentials(null));
+    dispatch(setSelectedListId(null));
+    dispatch(api.util.resetApiState());
     navigate("/");
   }
 

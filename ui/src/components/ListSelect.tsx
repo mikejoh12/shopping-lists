@@ -23,10 +23,10 @@ export default function ListSelect() {
   return (
     <Box sx={{ minWidth: 120, maxWidth: 400, margin: "auto", p: 2 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">List</InputLabel>
+        <InputLabel id="select-list-label">List</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="select-list-label"
+          id="select-list"
           value={list}
           label="List"
           onChange={handleChange}
