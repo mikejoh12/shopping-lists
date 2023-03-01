@@ -6,18 +6,18 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { api } from "../store/api";
 import { ShoppingList } from "../store/api";
-import { setSelectedListId } from "../features/user/userSlice";
-import { useDispatch } from "react-redux";
+import { setSelectedList } from "../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 export default function ListSelect() {
-  const [list, setList] = React.useState("");
   const dispatch = useDispatch();
-
   const { data: shoppingLists } = api.useGetAllListsQuery();
 
+  const listId = useSelector((state: RootState) => state.user.selectedListId);
+
   const handleChange = (event: SelectChangeEvent) => {
-    setList(event.target.value as string);
-    dispatch(setSelectedListId(event.target.value as string));
+    dispatch(setSelectedList({id: event.target.value as string}));
   };
 
   return (
@@ -27,7 +27,7 @@ export default function ListSelect() {
         <Select
           labelId="select-list-label"
           id="select-list"
-          value={list}
+          value={listId}
           label="List"
           onChange={handleChange}
         >

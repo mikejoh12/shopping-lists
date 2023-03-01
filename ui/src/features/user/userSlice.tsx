@@ -3,22 +3,22 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 type UserState = {
   name: string | null;
-  selectedListId: string | null;
+  selectedListId: string;
 };
 
 const slice = createSlice({
   name: "user",
-  initialState: { name: null, selectedListId: null } as UserState,
+  initialState: { name: null, selectedListId: "" } as UserState,
   reducers: {
     setCredentials: (state, action: PayloadAction<string|null>) => {
       state.name = action.payload;
     },
-    setSelectedListId: (state, action: PayloadAction<string|null>) => {
-      state.selectedListId = action.payload;
+    setSelectedList: (state, action: PayloadAction<{id: string}>) => {
+      state.selectedListId = action.payload.id;
     },
   },
 });
 
-export const { setCredentials, setSelectedListId } = slice.actions;
+export const { setCredentials, setSelectedList } = slice.actions;
 
 export default slice.reducer;

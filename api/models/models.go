@@ -103,6 +103,22 @@ func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {
 	return nil
 }
 
+func RemoveList(listId string, ownerId primitive.ObjectID) error {
+	listObjId, err := primitive.ObjectIDFromHex(listId)
+	if err != nil {
+		return err
+	}
+
+	_, err = config.ShoppingLists.DeleteOne(context.TODO(), bson.M{
+		"_id": listObjId,
+		"ownerId": ownerId,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func AddUser(u User) error {
 	_, err := config.Users.InsertOne(context.TODO(), u)
 	if err != nil {

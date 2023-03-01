@@ -40,7 +40,7 @@ export default function NewListDialog() {
 
   return (
     <div>
-      <Box sx={{ textAlign: "center", p: 2 }}>
+      <Box sx={{ textAlign: "center", p: 1 }}>
         <Button variant="outlined" onClick={handleClickOpen}>
           Create new list
         </Button>

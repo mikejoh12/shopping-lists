@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ListSelect from "../components/ListSelect";
 import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
+import ManageListDialog from "../components/ManageListDialog";
 
 export default function ListItems() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
@@ -29,17 +30,33 @@ export default function ListItems() {
     <>
       <ListSelect />
       <NewListDialog />
-      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 4 }}>
+      <ManageListDialog />
+      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 2 }}>
         {isLoading ? (
-          <Typography variant="h4" component="div" gutterBottom textAlign="center">
+          <Typography
+            variant="h4"
+            component="div"
+            gutterBottom
+            textAlign="center"
+          >
             Loading
           </Typography>
         ) : shoppingLists == null ? (
-          <Typography variant="h4" component="div" gutterBottom textAlign="center">
+          <Typography
+            variant="h4"
+            component="div"
+            gutterBottom
+            textAlign="center"
+          >
             Please create a new list
           </Typography>
         ) : !selectedListId ? (
-          <Typography variant="h4" component="div" gutterBottom textAlign="center">
+          <Typography
+            variant="h4"
+            component="div"
+            gutterBottom
+            textAlign="center"
+          >
             Please select a list or create a new one
           </Typography>
         ) : (

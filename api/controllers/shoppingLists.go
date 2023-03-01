@@ -25,7 +25,7 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 
 	r.Post("/", rs.CreateList)
 	r.Get("/", rs.GetLists)
-
+	r.Delete("/{id}", rs.DeleteList)
 
 	r.Route("/items", func(r chi.Router) {
 		r.Post("/", rs.CreateListItem)
@@ -83,6 +83,27 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+}
+
+// DeleteList deletes a shopping list from a list id in the URL params
+func (rs ShoppingListsResource) DeleteList(w http.ResponseWriter, r *http.Request) {
+	listId := chi.URLParam(r, "id")
+
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	err = models.RemoveList(listId, ownerId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // CreateListItem creates a new list item from json data

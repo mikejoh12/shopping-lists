@@ -53,7 +53,6 @@ const baseQueryWithLogout: BaseQueryFn<
   return result;
 };
 
-// Define a service using a base URL and expected endpoints
 export const api = createApi({
   reducerPath: "shoppingListApi",
   baseQuery: baseQueryWithLogout,
@@ -73,6 +72,19 @@ export const api = createApi({
       query: () => "lists",
       providesTags: ["ShoppingList"],
     }),
+    deleteList: builder.mutation<
+      { success: boolean; id: number },
+      string | undefined
+    >({
+      query(id) {
+        return {
+          url: `lists/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
     addListItem: builder.mutation<ListItem, Partial<ListItem>>({
       query(body) {
         return {
@@ -95,6 +107,7 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
+
     addUser: builder.mutation<
       RegisterUserRequest,
       Partial<RegisterUserRequest>
@@ -130,12 +143,11 @@ export const api = createApi({
   }),
 });
 
-// Export hooks for usage in function components, which are
-// auto-generated based on the defined endpoints
 export const {
   useAddListMutation,
   useGetAllListsQuery,
   useAddListItemMutation,
+  useDeleteListMutation,
   useDeleteListItemMutation,
   useAddUserMutation,
   useLoginUserMutation,
