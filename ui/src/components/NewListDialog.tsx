@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { useAddListMutation } from "../store/api";
 import { useDispatch } from "react-redux";
-import { displaySnackBar } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 type Inputs = {
   name: string;
@@ -39,7 +39,7 @@ export default function NewListDialog() {
     console.log(data);
     addList(data);
     handleClose();
-    dispatch(displaySnackBar("New list created: " + data.name));
+    dispatch(displaySnackBar({msg: "New list created: " + data.name, severity: MsgSeverity.Success}));
   };
 
   return (

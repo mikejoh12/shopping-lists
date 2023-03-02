@@ -16,6 +16,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 export default function CustomizedSnackbars() {
   const open = useSelector((state: RootState) => state.ui.isSnackBarOpen);
   const msg = useSelector((state: RootState) => state.ui.snackBarMsg);
+  const severity = useSelector((state: RootState) => state.ui.snackBarSeverity);
 
   const dispatch = useDispatch();
 
@@ -37,7 +38,7 @@ export default function CustomizedSnackbars() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
           {msg}
         </Alert>
       </Snackbar>

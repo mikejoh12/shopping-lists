@@ -9,7 +9,7 @@ import { useLoginUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
-import { displaySnackBar } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 type Inputs = {
   username: string;
@@ -27,11 +27,21 @@ export default function Login() {
     try {
       const user = await loginUser(data).unwrap();
       dispatch(setCredentials(user.username));
-      console.log(user);
       reset();
       navigate("/lists");
-      dispatch(displaySnackBar("Login Successful"));
+      dispatch(
+        displaySnackBar({
+          msg: "Login successful",
+          severity: MsgSeverity.Success,
+        })
+      );
     } catch (err) {
+      dispatch(
+        displaySnackBar({
+          msg: "Incorrect username or password",
+          severity: MsgSeverity.Error,
+        })
+      );
       console.log(err);
     }
   };

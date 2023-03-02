@@ -13,7 +13,7 @@ import ListSelect from "../components/ListSelect";
 import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
 import ManageListDialog from "../components/ManageListDialog";
-import { displaySnackBar } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 export default function ListItems() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
@@ -26,7 +26,7 @@ export default function ListItems() {
 
   function removeItem(t: number | undefined) {
     deleteItem(t);
-    dispatch(displaySnackBar("Item deleted"));
+    dispatch(displaySnackBar({msg: "Item deleted", severity: MsgSeverity.Success}));
   }
 
   return (

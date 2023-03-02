@@ -5,7 +5,7 @@ import { useAddListItemMutation } from "../store/api";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { displaySnackBar } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 type Inputs = {
   newItem: string;
@@ -26,7 +26,12 @@ export default function ListItemForm() {
     console.log(data);
     addListItem({ name: data.newItem, listId: selectedListId });
     reset();
-    dispatch(displaySnackBar("Item added: " + data.newItem));
+    dispatch(
+      displaySnackBar({
+        msg: "Item added: " + data.newItem,
+        severity: MsgSeverity.Success,
+      })
+    );
   };
 
   return (

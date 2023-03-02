@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials, setSelectedList } from "../features/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
-import { displaySnackBar } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 export const HeaderLayout = () => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const HeaderLayout = () => {
     dispatch(setSelectedList({ id: "" }));
     dispatch(api.util.resetApiState());
     navigate("/");
-    dispatch(displaySnackBar("Logout Successful"));
+    dispatch(displaySnackBar({msg: "Logout Successful", severity: MsgSeverity.Success}));
   }
 
   const [logoutUser] = useLogoutUserMutation();
