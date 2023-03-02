@@ -4,9 +4,10 @@ import { Box, AppBar, Toolbar, Typography } from "@mui/material";
 import { api, useLogoutUserMutation } from "../store/api";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials, setSelectedList } from "../features/user/userSlice";
+import { setCredentials, setSelectedList } from "../features/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
+import { displaySnackBar } from "../features/uiSlice";
 
 export const HeaderLayout = () => {
   const dispatch = useDispatch();
@@ -18,9 +19,10 @@ export const HeaderLayout = () => {
     e.preventDefault();
     logoutUser();
     dispatch(setCredentials(null));
-    dispatch(setSelectedList({id: ""}));
+    dispatch(setSelectedList({ id: "" }));
     dispatch(api.util.resetApiState());
     navigate("/");
+    dispatch(displaySnackBar("Logout Successful"));
   }
 
   const [logoutUser] = useLogoutUserMutation();

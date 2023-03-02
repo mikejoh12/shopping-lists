@@ -8,7 +8,8 @@ import Box from "@mui/material/Box";
 import { useDeleteListMutation } from "../store/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { setSelectedList } from "../features/user/userSlice";
+import { setSelectedList } from "../features/userSlice";
+import { displaySnackBar } from "../features/uiSlice";
 
 export default function ManageListDialog() {
   const [open, setOpen] = React.useState(false);
@@ -29,9 +30,10 @@ export default function ManageListDialog() {
   };
 
   function handleDeleteList() {
-    dispatch(setSelectedList({id: ""}));
+    dispatch(setSelectedList({ id: "" }));
     deleteList(selectedListId);
     handleClose();
+    dispatch(displaySnackBar("List deleted"));
   }
 
   return (

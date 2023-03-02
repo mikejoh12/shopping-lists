@@ -5,7 +5,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { api, useDeleteListItemMutation } from "../store/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddListItemForm from "./AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,6 +13,7 @@ import ListSelect from "../components/ListSelect";
 import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
 import ManageListDialog from "../components/ManageListDialog";
+import { displaySnackBar } from "../features/uiSlice";
 
 export default function ListItems() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
@@ -20,10 +21,12 @@ export default function ListItems() {
     (state: RootState) => state.user.selectedListId
   );
 
+  const dispatch = useDispatch();
   const [deleteItem] = useDeleteListItemMutation();
 
   function removeItem(t: number | undefined) {
     deleteItem(t);
+    dispatch(displaySnackBar("Item deleted"));
   }
 
   return (

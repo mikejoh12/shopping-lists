@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { api } from "../store/api";
 import { ShoppingList } from "../store/api";
-import { setSelectedList } from "../features/user/userSlice";
+import { setSelectedList } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
@@ -17,7 +17,7 @@ export default function ListSelect() {
   const listId = useSelector((state: RootState) => state.user.selectedListId);
 
   const handleChange = (event: SelectChangeEvent) => {
-    dispatch(setSelectedList({id: event.target.value as string}));
+    dispatch(setSelectedList({ id: event.target.value as string }));
   };
 
   return (

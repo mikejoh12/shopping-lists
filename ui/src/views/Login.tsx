@@ -7,8 +7,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { useLoginUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../features/user/userSlice";
+import { setCredentials } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
+import { displaySnackBar } from "../features/uiSlice";
 
 type Inputs = {
   username: string;
@@ -29,6 +30,7 @@ export default function Login() {
       console.log(user);
       reset();
       navigate("/lists");
+      dispatch(displaySnackBar("Login Successful"));
     } catch (err) {
       console.log(err);
     }

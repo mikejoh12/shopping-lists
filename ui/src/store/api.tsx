@@ -5,7 +5,7 @@ import type {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-import { setCredentials } from "../features/user/userSlice";
+import { setCredentials } from "../features/userSlice";
 
 export interface ListItem {
   id?: number;

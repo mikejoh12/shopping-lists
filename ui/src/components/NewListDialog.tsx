@@ -8,6 +8,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { useAddListMutation } from "../store/api";
+import { useDispatch } from "react-redux";
+import { displaySnackBar } from "../features/uiSlice";
 
 type Inputs = {
   name: string;
@@ -15,6 +17,7 @@ type Inputs = {
 
 export default function NewListDialog() {
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
 
   const [addList] = useAddListMutation();
 
@@ -36,6 +39,7 @@ export default function NewListDialog() {
     console.log(data);
     addList(data);
     handleClose();
+    dispatch(displaySnackBar("New list created: " + data.name));
   };
 
   return (

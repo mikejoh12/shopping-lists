@@ -4,10 +4,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useAddListItemMutation } from "../store/api";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { RootState } from "../store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { displaySnackBar } from "../features/uiSlice";
 
 type Inputs = {
-  newTodo: string;
+  newItem: string;
 };
 
 export default function ListItemForm() {
@@ -15,23 +16,20 @@ export default function ListItemForm() {
     (state: RootState) => state.user.selectedListId
   );
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const dispatch = useDispatch();
+
+  const { register, handleSubmit, reset } = useForm<Inputs>();
 
   const [addListItem] = useAddListItemMutation();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data);
-    addListItem({ name: data.newTodo, listId: selectedListId });
+    addListItem({ name: data.newItem, listId: selectedListId });
     reset();
+    dispatch(displaySnackBar("Item added: " + data.newItem));
   };
 
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <Grid2
       container
       component="form"
@@ -48,7 +46,7 @@ export default function ListItemForm() {
           id="outlined-basic"
           label="Add item"
           variant="outlined"
-          {...register("newTodo", { required: true })}
+          {...register("newItem", { required: true })}
         />
       </Grid2>
 
