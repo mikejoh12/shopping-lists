@@ -41,7 +41,7 @@ export default function ManageListDialog() {
   return (
     <div>
       <Box sx={{ textAlign: "center", p: 1 }}>
-        <Button variant="outlined" onClick={handleClickOpen}>
+        <Button variant="outlined" onClick={handleClickOpen} color="secondary">
           Manage List
         </Button>
         <Dialog open={open} onClose={handleClose}>

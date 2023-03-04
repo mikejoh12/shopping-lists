@@ -39,13 +39,18 @@ export default function NewListDialog() {
     console.log(data);
     addList(data);
     handleClose();
-    dispatch(displaySnackBar({msg: "New list created: " + data.name, severity: MsgSeverity.Success}));
+    dispatch(
+      displaySnackBar({
+        msg: "New list created: " + data.name,
+        severity: MsgSeverity.Success,
+      })
+    );
   };
 
   return (
     <div>
       <Box sx={{ textAlign: "center", p: 1 }}>
-        <Button variant="outlined" onClick={handleClickOpen}>
+        <Button variant="outlined" color="secondary" onClick={handleClickOpen}>
           Create new list
         </Button>
         <Dialog open={open} onClose={handleClose}>
@@ -60,7 +65,9 @@ export default function NewListDialog() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">Create List</Button>
+              <Button type="submit">
+                Create List
+              </Button>
             </DialogActions>
           </form>
         </Dialog>

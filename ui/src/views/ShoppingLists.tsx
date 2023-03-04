@@ -6,7 +6,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { api, useDeleteListItemMutation } from "../store/api";
 import { useDispatch, useSelector } from "react-redux";
-import AddListItemForm from "./AddListItemForm";
+import AddListItemForm from "../components/AddListItemForm";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListSelect from "../components/ListSelect";
@@ -26,15 +26,16 @@ export default function ListItems() {
 
   function removeItem(t: number | undefined) {
     deleteItem(t);
-    dispatch(displaySnackBar({msg: "Item deleted", severity: MsgSeverity.Success}));
+    dispatch(
+      displaySnackBar({ msg: "Item deleted", severity: MsgSeverity.Success })
+    );
   }
 
   return (
     <>
       <ListSelect />
       <NewListDialog />
-      <ManageListDialog />
-      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 2 }}>
+      <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
         {isLoading ? (
           <Typography
             variant="h4"
@@ -64,6 +65,7 @@ export default function ListItems() {
           </Typography>
         ) : (
           <>
+            <ManageListDialog />
             <Box
               sx={{
                 width: "100%",

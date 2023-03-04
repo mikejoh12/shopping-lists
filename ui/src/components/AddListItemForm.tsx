@@ -56,7 +56,7 @@ export default function ListItemForm() {
       </Grid2>
 
       <Grid2>
-        <Button type="submit" variant="contained">
+        <Button type="submit" variant="contained" color="secondary">
           Add item
         </Button>
       </Grid2>
