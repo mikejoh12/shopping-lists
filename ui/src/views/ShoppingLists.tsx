@@ -4,7 +4,12 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { api, useDeleteListItemMutation } from "../store/api";
+import {
+  api,
+  ShoppingListItem,
+  useDeleteListItemMutation,
+  useModifyListItemMutation,
+} from "../store/api";
 import { useDispatch, useSelector } from "react-redux";
 import AddListItemForm from "../components/AddListItemForm";
 import { IconButton } from "@mui/material";
@@ -14,6 +19,7 @@ import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
 import ManageListDialog from "../components/ManageListDialog";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import Checkbox from "@mui/material/Checkbox";
 
 export default function ListItems() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
@@ -23,12 +29,36 @@ export default function ListItems() {
 
   const dispatch = useDispatch();
   const [deleteItem] = useDeleteListItemMutation();
+  const [modifyListItem] = useModifyListItemMutation();
 
-  function removeItem(t: number | undefined) {
-    deleteItem(t);
-    dispatch(
-      displaySnackBar({ msg: "Item deleted", severity: MsgSeverity.Success })
-    );
+  async function handleCheckBoxChange(item: ShoppingListItem) {
+    let newItem = { ...item, isCompleted: !item.isCompleted };
+    try {
+      await modifyListItem(newItem).unwrap();
+    } catch (err) {
+      dispatch(
+        displaySnackBar({
+          msg: "The was a problem with the server",
+          severity: MsgSeverity.Error,
+        })
+      );
+    }
+  }
+
+  async function removeItem(t: number | undefined) {
+    try {
+      await deleteItem(t).unwrap();
+      dispatch(
+        displaySnackBar({ msg: "Item deleted", severity: MsgSeverity.Success })
+      );
+    } catch (err) {
+      dispatch(
+        displaySnackBar({
+          msg: "The was a problem with the server",
+          severity: MsgSeverity.Error,
+        })
+      );
+    }
   }
 
   return (
@@ -79,14 +109,19 @@ export default function ListItems() {
                   ?.find((list) => {
                     return String(list.id) === selectedListId;
                   })
-                  ?.items?.map((list) => (
-                    <ListItem disablePadding key={list.id}>
-                      <ListItemText primary={list.name} />
+                  ?.items?.map((item) => (
+                    <ListItem disablePadding key={item.id}>
+                      <ListItemText primary={item.name} />
+
+                      <Checkbox
+                        checked={item.isCompleted}
+                        onChange={() => handleCheckBoxChange(item)}
+                      />
 
                       <IconButton
                         edge="end"
                         aria-label="delete"
-                        onClick={() => removeItem(list.id)}
+                        onClick={() => removeItem(item.id)}
                       >
                         <DeleteIcon />
                       </IconButton>

@@ -14,6 +14,7 @@ import (
 type NewListItemReq struct {
 	Name   		 string				`json:"name"`
 	ListId		 string				`json:"listId"`
+	IsCompleted	 bool				`json:"isCompleted"`
 }
 
 type ShoppingListsResource struct{}
@@ -30,6 +31,7 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 	r.Route("/items", func(r chi.Router) {
 		r.Post("/", rs.CreateListItem)
 		r.Delete("/{id}", rs.DeleteListItem)
+		r.Put("/{id}", rs.UpdateListItem)
 	})
 
 	return r
@@ -159,4 +161,47 @@ func (rs ShoppingListsResource) DeleteListItem(w http.ResponseWriter, r *http.Re
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// UpdateListItem updates a list item based on the id
+func (rs ShoppingListsResource) UpdateListItem(w http.ResponseWriter, r *http.Request) {
+	listItemId := chi.URLParam(r, "id")
+
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	// Add logic to update db
+	var itemData NewListItemReq
+	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	liId, err := primitive.ObjectIDFromHex(listItemId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	li := models.ListItem{
+		ID: liId,
+		Name: itemData.Name,
+		IsCompleted: itemData.IsCompleted,
+	}
+
+
+	err = models.ModifyListItem(ownerId, li)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

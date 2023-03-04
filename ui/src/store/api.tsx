@@ -7,17 +7,18 @@ import type {
 } from "@reduxjs/toolkit/query";
 import { setCredentials } from "../features/userSlice";
 
-export interface ListItem {
+export interface ShoppingListItem {
   id?: number;
   name: string;
   listId: string | null;
+  isCompleted: boolean;
 }
 
 export interface ShoppingList {
   id?: number;
   ownerId: number;
   name: string;
-  items: ListItem[];
+  items: ShoppingListItem[];
 }
 
 export interface LoginRequest {
@@ -45,7 +46,6 @@ const baseQueryWithLogout: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log(result);
   if (result.error && result.error.status === 401) {
     api.dispatch(setCredentials(null));
     alert("You have been logged out");
@@ -68,10 +68,12 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
+
     getAllLists: builder.query<ShoppingList[], void>({
       query: () => "lists",
       providesTags: ["ShoppingList"],
     }),
+
     deleteList: builder.mutation<
       { success: boolean; id: number },
       string | undefined
@@ -85,7 +87,7 @@ export const api = createApi({
       invalidatesTags: ["ShoppingList"],
     }),
 
-    addListItem: builder.mutation<ListItem, Partial<ListItem>>({
+    addListItem: builder.mutation<ShoppingListItem, Partial<ShoppingListItem>>({
       query(body) {
         return {
           url: `lists/items`,
@@ -95,6 +97,18 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
+
+    modifyListItem: builder.mutation<ShoppingListItem, ShoppingListItem>({
+      query(body) {
+        return {
+          url: `lists/items/${body.id}`,
+          method: "PUT",
+          body,
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
     deleteListItem: builder.mutation<
       { success: boolean; id: number },
       number | undefined
@@ -121,6 +135,7 @@ export const api = createApi({
       },
       invalidatesTags: ["User"],
     }),
+
     loginUser: builder.mutation<UserResponse, LoginRequest>({
       query(body) {
         return {
@@ -131,6 +146,7 @@ export const api = createApi({
       },
       invalidatesTags: ["User"],
     }),
+
     logoutUser: builder.mutation<void, void>({
       query() {
         return {
@@ -147,6 +163,7 @@ export const {
   useAddListMutation,
   useGetAllListsQuery,
   useAddListItemMutation,
+  useModifyListItemMutation,
   useDeleteListMutation,
   useDeleteListItemMutation,
   useAddUserMutation,

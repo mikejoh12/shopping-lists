@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mikejoh12/go-todo/config"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,6 +12,7 @@ import (
 type ListItem struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name   		 string				`json:"name"`
+	IsCompleted	 bool				`json:"isCompleted"`
 }
 
 type ShoppingList struct {
@@ -32,13 +32,11 @@ type User struct {
 func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 	cursor, err := config.ShoppingLists.Find(context.TODO(), bson.M{"ownerId": userId})
 	if err != nil {			
-		fmt.Println("error in find")
 		return nil, err	
 	}
 	var results []ShoppingList
 
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		fmt.Println("error in cursor")
 		return nil, err
 	}
 
@@ -53,6 +51,7 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 	li := ListItem{
 		ID: primitive.NewObjectID(),
 		Name: name,
+		IsCompleted: false,
 	}
 
 	update := bson.M{
@@ -62,6 +61,22 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 	}
 	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId, "_id": listId}, update)
 
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
+
+
+	update := bson.M{
+		"$set": bson.M{
+			"items.$": li,
+		},
+	}
+
+	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId, "items._id": li.ID}, update)
 	if err != nil {
 		return err
 	}

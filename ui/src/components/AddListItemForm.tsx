@@ -23,7 +23,6 @@ export default function ListItemForm() {
   const [addListItem] = useAddListItemMutation();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     addListItem({ name: data.newItem, listId: selectedListId });
     reset();
     dispatch(
