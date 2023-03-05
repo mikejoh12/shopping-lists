@@ -1,0 +1,2 @@
+# React bundle dir which is embedded into the go binary
+/api/dist
