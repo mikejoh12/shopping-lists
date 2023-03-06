@@ -27,6 +27,16 @@ export default function ListItems() {
     (state: RootState) => state.user.selectedListId
   );
 
+  const selectedList = shoppingLists?.find((list) => {
+    return String(list.id) === selectedListId;
+  });
+
+  let sortedList: Array<ShoppingListItem> = [];
+  if (selectedList) {
+    sortedList = [...selectedList.items];
+    sortedList.sort(compareFn);
+  }
+
   const dispatch = useDispatch();
   const [deleteItem] = useDeleteListItemMutation();
   const [modifyListItem] = useModifyListItemMutation();
@@ -59,6 +69,13 @@ export default function ListItems() {
         })
       );
     }
+  }
+
+  function compareFn(a: ShoppingListItem, b: ShoppingListItem) {
+    if (a.isCompleted && !b.isCompleted) {
+      return 1;
+    }
+    return -1;
   }
 
   return (
@@ -105,28 +122,24 @@ export default function ListItems() {
               }}
             >
               <List>
-                {shoppingLists
-                  ?.find((list) => {
-                    return String(list.id) === selectedListId;
-                  })
-                  ?.items?.map((item) => (
-                    <ListItem disablePadding key={item.id}>
-                      <ListItemText primary={item.name} />
+                {sortedList?.map((item) => (
+                  <ListItem disablePadding key={item.id}>
+                    <ListItemText primary={item.name} />
 
-                      <Checkbox
-                        checked={item.isCompleted}
-                        onChange={() => handleCheckBoxChange(item)}
-                      />
+                    <Checkbox
+                      checked={item.isCompleted}
+                      onChange={() => handleCheckBoxChange(item)}
+                    />
 
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => removeItem(item.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItem>
-                  ))}
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeItem(item.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItem>
+                ))}
               </List>
             </Box>
             <AddListItemForm />
