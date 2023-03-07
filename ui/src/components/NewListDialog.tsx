@@ -36,7 +36,6 @@ export default function NewListDialog() {
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     addList(data);
     handleClose();
     dispatch(

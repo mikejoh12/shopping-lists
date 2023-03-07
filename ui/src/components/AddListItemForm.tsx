@@ -1,38 +1,28 @@
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useAddListItemMutation } from "../store/api";
+import {
+  SubmitHandler,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormReset,
+} from "react-hook-form";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { RootState } from "../store/store";
-import { useDispatch, useSelector } from "react-redux";
-import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
 type Inputs = {
   newItem: string;
 };
 
-export default function ListItemForm() {
-  const selectedListId = useSelector(
-    (state: RootState) => state.user.selectedListId
-  );
+interface ListItemFormProps {
+  handleSubmit: UseFormHandleSubmit<Inputs>;
+  onSubmit: SubmitHandler<Inputs>;
+  register: UseFormRegister<Inputs>;
+}
 
-  const dispatch = useDispatch();
-
-  const { register, handleSubmit, reset } = useForm<Inputs>();
-
-  const [addListItem] = useAddListItemMutation();
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    addListItem({ name: data.newItem, listId: selectedListId });
-    reset();
-    dispatch(
-      displaySnackBar({
-        msg: "Item added: " + data.newItem,
-        severity: MsgSeverity.Success,
-      })
-    );
-  };
-
+export default function ListItemForm({
+  onSubmit,
+  handleSubmit,
+  register,
+}: ListItemFormProps) {
   return (
     <Grid2
       container

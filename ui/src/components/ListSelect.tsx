@@ -4,16 +4,17 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { api } from "../store/api";
 import { ShoppingList } from "../store/api";
 import { setSelectedList } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
-export default function ListSelect() {
-  const dispatch = useDispatch();
-  const { data: shoppingLists } = api.useGetAllListsQuery();
+interface ListSelectProps {
+  list: ShoppingList[] | undefined;
+}
 
+export default function ListSelect({ list }: ListSelectProps) {
+  const dispatch = useDispatch();
   const listId = useSelector((state: RootState) => state.user.selectedListId);
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -31,7 +32,7 @@ export default function ListSelect() {
           label="List"
           onChange={handleChange}
         >
-          {shoppingLists?.map((list: ShoppingList, idx) => {
+          {list?.map((list: ShoppingList, idx) => {
             return (
               <MenuItem key={idx} value={list.id}>
                 {list.name}

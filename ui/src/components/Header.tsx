@@ -8,10 +8,12 @@ import { setCredentials, setSelectedList } from "../features/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { useAuth } from "../hooks/useAuth";
 
 export const HeaderLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const selectedUser = useSelector((state: RootState) => state.user.name);
 
@@ -22,7 +24,12 @@ export const HeaderLayout = () => {
     dispatch(setSelectedList({ id: "" }));
     dispatch(api.util.resetApiState());
     navigate("/");
-    dispatch(displaySnackBar({msg: "Logout Successful", severity: MsgSeverity.Success}));
+    dispatch(
+      displaySnackBar({
+        msg: "Logout Successful",
+        severity: MsgSeverity.Success,
+      })
+    );
   }
 
   const [logoutUser] = useLogoutUserMutation();
@@ -35,6 +42,11 @@ export const HeaderLayout = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Shopping Lists
             </Typography>
+            {auth.user && (
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {auth.user}
+              </Typography>
+            )}
             {selectedUser ? (
               <>
                 <Button component={Link} color="inherit" to="/lists">

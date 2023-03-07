@@ -1,28 +1,33 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import {
   api,
   ShoppingListItem,
+  useAddListItemMutation,
   useDeleteListItemMutation,
   useModifyListItemMutation,
 } from "../store/api";
 import { useDispatch, useSelector } from "react-redux";
 import AddListItemForm from "../components/AddListItemForm";
-import { IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ListSelect from "../components/ListSelect";
 import NewListDialog from "../components/NewListDialog";
 import { RootState } from "../store/store";
 import ManageListDialog from "../components/ManageListDialog";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
-import Checkbox from "@mui/material/Checkbox";
+import { ShoppingList } from "../components/ShoppingList";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-export default function ListItems() {
+type Inputs = {
+  newItem: string;
+};
+
+export default function ShoppingLists() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
+  const [addListItem] = useAddListItemMutation();
+
+  const { register, handleSubmit, reset } = useForm<Inputs>();
+
   const selectedListId = useSelector(
     (state: RootState) => state.user.selectedListId
   );
@@ -55,6 +60,17 @@ export default function ListItems() {
     }
   }
 
+  const onNewItemSubmit: SubmitHandler<Inputs> = (data) => {
+    addListItem({ name: data.newItem, listId: selectedListId });
+    reset();
+    dispatch(
+      displaySnackBar({
+        msg: "Item added: " + data.newItem,
+        severity: MsgSeverity.Success,
+      })
+    );
+  };
+
   async function removeItem(t: number | undefined) {
     try {
       await deleteItem(t).unwrap();
@@ -80,7 +96,7 @@ export default function ListItems() {
 
   return (
     <>
-      <ListSelect />
+      <ListSelect list={shoppingLists} />
       <NewListDialog />
       <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
         {isLoading ? (
@@ -113,36 +129,16 @@ export default function ListItems() {
         ) : (
           <>
             <ManageListDialog />
-            <Box
-              sx={{
-                width: "100%",
-                maxWidth: 360,
-                margin: "auto",
-                bgcolor: "background.paper",
-              }}
-            >
-              <List>
-                {sortedList?.map((item) => (
-                  <ListItem disablePadding key={item.id}>
-                    <ListItemText primary={item.name} />
-
-                    <Checkbox
-                      checked={item.isCompleted}
-                      onChange={() => handleCheckBoxChange(item)}
-                    />
-
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeItem(item.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-            <AddListItemForm />
+            <ShoppingList
+              list={sortedList}
+              checkFn={handleCheckBoxChange}
+              removeFn={removeItem}
+            />
+            <AddListItemForm
+              onSubmit={onNewItemSubmit}
+              handleSubmit={handleSubmit}
+              register={register}
+            />
           </>
         )}
       </Box>

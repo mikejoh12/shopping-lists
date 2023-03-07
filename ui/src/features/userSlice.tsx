@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
 
 type UserState = {
   name: string | null;
@@ -20,5 +21,8 @@ const slice = createSlice({
 });
 
 export const { setCredentials, setSelectedList } = slice.actions;
+
+export const selectCurrentUser = (state: RootState) => state.user.name
+
 
 export default slice.reducer;
