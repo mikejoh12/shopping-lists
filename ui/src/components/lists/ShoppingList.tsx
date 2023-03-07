@@ -7,7 +7,7 @@ import {
   Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ShoppingListItem } from "../store/api";
+import { ShoppingListItem } from "../../store/api";
 
 interface ListProps {
   list: ShoppingListItem[];

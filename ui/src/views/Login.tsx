@@ -28,7 +28,7 @@ export default function Login() {
       const user = await loginUser(data).unwrap();
       dispatch(setCredentials(user.username));
       reset();
-      navigate("/lists");
+      navigate("/");
       dispatch(
         displaySnackBar({
           msg: "Login successful",

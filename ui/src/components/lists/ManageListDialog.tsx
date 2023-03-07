@@ -5,11 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
-import { useDeleteListMutation } from "../store/api";
+import { useDeleteListMutation } from "../../store/api";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { setSelectedList } from "../features/userSlice";
-import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { RootState } from "../../store/store";
+import { setSelectedList } from "../../features/userSlice";
+import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
 
 export default function ManageListDialog() {
   const [open, setOpen] = React.useState(false);

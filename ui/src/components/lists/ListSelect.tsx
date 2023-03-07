@@ -4,10 +4,10 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { ShoppingList } from "../store/api";
-import { setSelectedList } from "../features/userSlice";
+import { ShoppingList } from "../../store/api";
+import { setSelectedList } from "../../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "../../store/store";
 
 interface ListSelectProps {
   list: ShoppingList[] | undefined;

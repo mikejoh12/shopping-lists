@@ -7,9 +7,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import { useAddListMutation } from "../store/api";
+import { useAddListMutation } from "../../store/api";
 import { useDispatch } from "react-redux";
-import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
+import { useAuth } from "../../hooks/useAuth";
+import { addNewVisitorList } from "../../features/listsSlice";
+import { ShoppingList } from "../../store/api";
+import { v4 as uuidv4 } from "uuid";
 
 type Inputs = {
   name: string;
@@ -18,6 +22,7 @@ type Inputs = {
 export default function NewListDialog() {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
+  const auth = useAuth();
 
   const [addList] = useAddListMutation();
 
@@ -36,7 +41,17 @@ export default function NewListDialog() {
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    addList(data);
+    if (auth.user) {
+      addList(data);
+    } else {
+      const newList: ShoppingList = {
+        id: uuidv4(),
+        ownerId: 0,
+        name: data.name,
+        items: [],
+      };
+      dispatch(addNewVisitorList(newList));
+    }
     handleClose();
     dispatch(
       displaySnackBar({
@@ -64,9 +79,7 @@ export default function NewListDialog() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">
-                Create List
-              </Button>
+              <Button type="submit">Create List</Button>
             </DialogActions>
           </form>
         </Dialog>

@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./views/Login";
-import Lists from "./views/LoggedInShoppingLists";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
-import Landing from "./views/Landing";
 import { RequireAuth } from "./components/RequireAuth";
+import ShoppingLists from "./views/ShoppingLists";
+import Account from "./views/Account";
 
 const router = createBrowserRouter([
   {
@@ -12,13 +12,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Landing />,
+        element: <ShoppingLists />,
       },
       {
-        path: "/lists",
+        path: "/account",
         element: (
           <RequireAuth>
-            <Lists />
+            <Account />
           </RequireAuth>
         ),
       },

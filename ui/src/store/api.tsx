@@ -15,7 +15,7 @@ export interface ShoppingListItem {
 }
 
 export interface ShoppingList {
-  id?: number;
+  id?: string;
   ownerId: number;
   name: string;
   items: ShoppingListItem[];

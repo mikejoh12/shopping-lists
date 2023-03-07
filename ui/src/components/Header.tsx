@@ -49,8 +49,8 @@ export const HeaderLayout = () => {
             )}
             {selectedUser ? (
               <>
-                <Button component={Link} color="inherit" to="/lists">
-                  Lists
+                <Button component={Link} color="inherit" to="/account">
+                  Account
                 </Button>
                 <Button color="inherit" onClick={(e) => handleLogout(e)}>
                   Log out

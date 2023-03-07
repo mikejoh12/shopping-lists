@@ -4,7 +4,6 @@ import {
   SubmitHandler,
   UseFormHandleSubmit,
   UseFormRegister,
-  UseFormReset,
 } from "react-hook-form";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
@@ -23,6 +22,7 @@ export default function ListItemForm({
   handleSubmit,
   register,
 }: ListItemFormProps) {
+
   return (
     <Grid2
       container

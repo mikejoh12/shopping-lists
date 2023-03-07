@@ -1,40 +1,30 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {
-  api,
   ShoppingListItem,
-  useAddListItemMutation,
-  useDeleteListItemMutation,
-  useModifyListItemMutation,
-} from "../store/api";
+} from "../../store/api";
 import { useDispatch, useSelector } from "react-redux";
-import AddListItemForm from "../components/AddListItemForm";
-import ListSelect from "../components/ListSelect";
-import NewListDialog from "../components/NewListDialog";
-import { RootState } from "../store/store";
-import ManageListDialog from "../components/ManageListDialog";
-import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
-import { ShoppingList } from "../components/ShoppingList";
+import AddListItemForm from "./AddListItemForm";
+import { RootState } from "../../store/store";
+import ManageListDialog from "./ManageListDialog";
+import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
+import { ShoppingList } from "./ShoppingList";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { selectLists, selectSelectedList } from "../../features/listsSlice";
 
 type Inputs = {
   newItem: string;
 };
 
-export default function ShoppingLists() {
-  const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
-  const [addListItem] = useAddListItemMutation();
-
+export default function NewVisitorShoppingLists() {
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   const selectedListId = useSelector(
     (state: RootState) => state.user.selectedListId
   );
 
-  const selectedList = shoppingLists?.find((list) => {
-    return String(list.id) === selectedListId;
-  });
+  const shoppingLists = useSelector(selectLists);
+  const selectedList = useSelector(selectSelectedList);
 
   let sortedList: Array<ShoppingListItem> = [];
   if (selectedList) {
@@ -43,25 +33,12 @@ export default function ShoppingLists() {
   }
 
   const dispatch = useDispatch();
-  const [deleteItem] = useDeleteListItemMutation();
-  const [modifyListItem] = useModifyListItemMutation();
 
   async function handleCheckBoxChange(item: ShoppingListItem) {
-    let newItem = { ...item, isCompleted: !item.isCompleted };
-    try {
-      await modifyListItem(newItem).unwrap();
-    } catch (err) {
-      dispatch(
-        displaySnackBar({
-          msg: "The was a problem with the server",
-          severity: MsgSeverity.Error,
-        })
-      );
-    }
+    console.log("Changing checkbox");
   }
 
   const onNewItemSubmit: SubmitHandler<Inputs> = (data) => {
-    addListItem({ name: data.newItem, listId: selectedListId });
     reset();
     dispatch(
       displaySnackBar({
@@ -72,19 +49,12 @@ export default function ShoppingLists() {
   };
 
   async function removeItem(t: number | undefined) {
-    try {
-      await deleteItem(t).unwrap();
-      dispatch(
-        displaySnackBar({ msg: "Item deleted", severity: MsgSeverity.Success })
-      );
-    } catch (err) {
-      dispatch(
-        displaySnackBar({
-          msg: "The was a problem with the server",
-          severity: MsgSeverity.Error,
-        })
-      );
-    }
+    dispatch(
+      displaySnackBar({
+        msg: "The was a problem with the server",
+        severity: MsgSeverity.Error,
+      })
+    );
   }
 
   function compareFn(a: ShoppingListItem, b: ShoppingListItem) {
@@ -96,19 +66,8 @@ export default function ShoppingLists() {
 
   return (
     <>
-      <ListSelect list={shoppingLists} />
-      <NewListDialog />
       <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
-        {isLoading ? (
-          <Typography
-            variant="h4"
-            component="div"
-            gutterBottom
-            textAlign="center"
-          >
-            Loading
-          </Typography>
-        ) : shoppingLists == null ? (
+        {shoppingLists.length === 0 ? (
           <Typography
             variant="h4"
             component="div"
