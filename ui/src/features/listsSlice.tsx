@@ -21,10 +21,19 @@ const slice = createSlice({
       let idx = state.lists.findIndex((list) => list.id === action.payload.listId);
       state.lists[idx].items.push(action.payload.item)
     },
+    toggleCheckboxNewVisitorItem: (state, action: PayloadAction<{ listId: string, itemId: string }>) => {
+      let listIdx = state.lists.findIndex((list) => list.id === action.payload.listId);
+      let itemIdx = state.lists[listIdx].items.findIndex((item) => item.id === action.payload.itemId);
+      state.lists[listIdx].items[itemIdx].isCompleted = !state.lists[listIdx].items[itemIdx].isCompleted
+    },
+    removeNewVisitorItem: (state, action: PayloadAction<{ listId: string, itemId: string }>) => {
+      let listIdx = state.lists.findIndex((list) => list.id === action.payload.listId);
+      state.lists[listIdx].items = state.lists[listIdx].items.filter((item) => item.id !== action.payload.itemId)
+    },
   },
 });
 
-export const { addNewVisitorList, removeNewVisitorList, addNewVisitorItem } = slice.actions;
+export const { addNewVisitorList, removeNewVisitorList, addNewVisitorItem, toggleCheckboxNewVisitorItem, removeNewVisitorItem } = slice.actions;
 
 export const selectSelectedList = (state: RootState) =>
   state.lists.lists.find(

@@ -10,8 +10,10 @@ import { ShoppingList } from "./ShoppingList";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   addNewVisitorItem,
+  removeNewVisitorItem,
   selectLists,
   selectSelectedList,
+  toggleCheckboxNewVisitorItem,
 } from "../../features/listsSlice";
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,7 +40,12 @@ export default function NewVisitorShoppingLists() {
   const dispatch = useDispatch();
 
   async function handleCheckBoxChange(item: ShoppingListItem) {
-    console.log("Changing checkbox");
+    dispatch(
+      toggleCheckboxNewVisitorItem({
+        listId: selectedListId,
+        itemId: item.id,
+      })
+    );
   }
 
   const onNewItemSubmit: SubmitHandler<Inputs> = (data) => {
@@ -62,11 +69,11 @@ export default function NewVisitorShoppingLists() {
     );
   };
 
-  async function removeItem(t: string | undefined) {
+  async function removeItem(itemId: string) {
     dispatch(
-      displaySnackBar({
-        msg: "The was a problem with the server",
-        severity: MsgSeverity.Error,
+      removeNewVisitorItem({
+        listId: selectedListId,
+        itemId: itemId,
       })
     );
   }

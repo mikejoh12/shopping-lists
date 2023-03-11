@@ -12,7 +12,7 @@ import { ShoppingListItem } from "../../store/api";
 interface ListProps {
   list: ShoppingListItem[];
   checkFn: (arg: ShoppingListItem) => void;
-  removeFn: (arg: string | undefined) => void;
+  removeFn: (arg: string) => void;
 }
 
 export const ShoppingList = ({ list, checkFn, removeFn }: ListProps) => {

@@ -8,14 +8,14 @@ import type {
 import { setCredentials } from "../features/userSlice";
 
 export interface ShoppingListItem {
-  id?: string;
+  id: string;
   name: string;
   listId: string | null;
   isCompleted: boolean;
 }
 
 export interface ShoppingList {
-  id?: string;
+  id: string;
   ownerId: number;
   name: string;
   items: ShoppingListItem[];
