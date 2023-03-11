@@ -8,7 +8,7 @@ import type {
 import { setCredentials } from "../features/userSlice";
 
 export interface ShoppingListItem {
-  id?: number;
+  id?: string;
   name: string;
   listId: string | null;
   isCompleted: boolean;
@@ -111,7 +111,7 @@ export const api = createApi({
 
     deleteListItem: builder.mutation<
       { success: boolean; id: number },
-      number | undefined
+      string | undefined
     >({
       query(id) {
         return {

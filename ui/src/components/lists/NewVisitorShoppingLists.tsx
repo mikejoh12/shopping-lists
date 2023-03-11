@@ -1,8 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {
-  ShoppingListItem,
-} from "../../store/api";
+import { ShoppingListItem } from "../../store/api";
 import { useDispatch, useSelector } from "react-redux";
 import AddListItemForm from "./AddListItemForm";
 import { RootState } from "../../store/store";
@@ -10,7 +8,12 @@ import ManageListDialog from "./ManageListDialog";
 import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
 import { ShoppingList } from "./ShoppingList";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { selectLists, selectSelectedList } from "../../features/listsSlice";
+import {
+  addNewVisitorItem,
+  selectLists,
+  selectSelectedList,
+} from "../../features/listsSlice";
+import { v4 as uuidv4 } from "uuid";
 
 type Inputs = {
   newItem: string;
@@ -41,6 +44,17 @@ export default function NewVisitorShoppingLists() {
   const onNewItemSubmit: SubmitHandler<Inputs> = (data) => {
     reset();
     dispatch(
+      addNewVisitorItem({
+        listId: selectedListId,
+        item: {
+          id: uuidv4(),
+          name: data.newItem,
+          isCompleted: false,
+          listId: selectedListId,
+        },
+      })
+    );
+    dispatch(
       displaySnackBar({
         msg: "Item added: " + data.newItem,
         severity: MsgSeverity.Success,
@@ -48,7 +62,7 @@ export default function NewVisitorShoppingLists() {
     );
   };
 
-  async function removeItem(t: number | undefined) {
+  async function removeItem(t: string | undefined) {
     dispatch(
       displaySnackBar({
         msg: "The was a problem with the server",

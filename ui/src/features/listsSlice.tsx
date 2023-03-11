@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { ShoppingList } from "../store/api";
+import { ShoppingList, ShoppingListItem } from "../store/api";
 import { RootState } from "../store/store";
 
 type ListsState = {
@@ -17,10 +17,14 @@ const slice = createSlice({
     removeNewVisitorList: (state, action: PayloadAction<{ id: string }>) => {
       state.lists = state.lists.filter((list) => list.id !== action.payload.id);
     },
+    addNewVisitorItem: (state, action: PayloadAction<{ listId: string,item: ShoppingListItem }>) => {
+      let idx = state.lists.findIndex((list) => list.id === action.payload.listId);
+      state.lists[idx].items.push(action.payload.item)
+    },
   },
 });
 
-export const { addNewVisitorList, removeNewVisitorList } = slice.actions;
+export const { addNewVisitorList, removeNewVisitorList, addNewVisitorItem } = slice.actions;
 
 export const selectSelectedList = (state: RootState) =>
   state.lists.lists.find(

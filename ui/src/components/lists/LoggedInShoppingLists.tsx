@@ -69,7 +69,7 @@ export default function ShoppingLists() {
     );
   };
 
-  async function removeItem(t: number | undefined) {
+  async function removeItem(t: string | undefined) {
     try {
       await deleteItem(t).unwrap();
       dispatch(
