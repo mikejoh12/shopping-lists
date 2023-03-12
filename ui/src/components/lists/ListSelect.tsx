@@ -28,7 +28,7 @@ export default function ListSelect({ list }: ListSelectProps) {
         <Select
           labelId="select-list-label"
           id="select-list"
-          value={listId}
+          value={list?.some((item) => item.id === listId) ? listId : ""}
           label="List"
           onChange={handleChange}
         >

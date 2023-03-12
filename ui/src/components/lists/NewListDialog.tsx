@@ -14,6 +14,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { addNewVisitorList } from "../../features/listsSlice";
 import { ShoppingList } from "../../store/api";
 import { v4 as uuidv4 } from "uuid";
+import { setSelectedList } from "../../features/userSlice";
 
 type Inputs = {
   name: string;
@@ -40,9 +41,14 @@ export default function NewListDialog() {
     setOpen(false);
   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (auth.user) {
-      addList(data);
+      try {
+        const payload = await addList(data).unwrap();
+        dispatch(setSelectedList({ id: payload.id }));
+      } catch (err) {
+        console.error("error", err);
+      }
     } else {
       const newList: ShoppingList = {
         id: uuidv4(),
@@ -51,6 +57,7 @@ export default function NewListDialog() {
         items: [],
       };
       dispatch(addNewVisitorList(newList));
+      dispatch(setSelectedList({ id: newList.id }));
     }
     handleClose();
     dispatch(

@@ -83,7 +83,7 @@ func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
 	return nil
 }
 
-func AddShoppingList(name string, ownerId primitive.ObjectID) error {
+func AddShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
 	t := ShoppingList{
 		ID: primitive.NewObjectID(),
 		OwnerId: ownerId,
@@ -92,9 +92,9 @@ func AddShoppingList(name string, ownerId primitive.ObjectID) error {
 	}
 	_, err := config.ShoppingLists.InsertOne(context.TODO(), t)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return t.ID.Hex(), nil
 }
 
 func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {

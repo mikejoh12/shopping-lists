@@ -77,7 +77,7 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = models.AddShoppingList(l.Name, ownerId)
+	id, err := models.AddShoppingList(l.Name, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -85,6 +85,10 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(struct{
+		Name	string `json:"name"`
+		Id		string `json:"id"`
+	}{l.Name, id})
 }
 
 // DeleteList deletes a shopping list from a list id in the URL params
