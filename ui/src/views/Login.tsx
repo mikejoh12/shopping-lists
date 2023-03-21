@@ -6,10 +6,11 @@ import TextField from "@mui/material/TextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { useLoginUserMutation } from "../store/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { selectLists } from "../features/listsSlice";
 
 type Inputs = {
   username: string;
@@ -20,6 +21,7 @@ export default function Login() {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const newVisitorLists = useSelector(selectLists);
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
@@ -35,6 +37,7 @@ export default function Login() {
           severity: MsgSeverity.Success,
         })
       );
+      navigate(newVisitorLists.length > 0 ? "/upload-lists" : "/");
     } catch (err) {
       dispatch(
         displaySnackBar({

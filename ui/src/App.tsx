@@ -5,6 +5,7 @@ import Register from "./views/Register";
 import { RequireAuth } from "./components/RequireAuth";
 import ShoppingLists from "./views/ShoppingLists";
 import Account from "./views/Account";
+import UploadLists from "./views/UploadLists";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,14 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/upload-lists",
+        element: (
+          <RequireAuth>
+            <UploadLists />
+          </RequireAuth>
+        ),
       },
       {
         path: "/register",

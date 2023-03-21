@@ -22,7 +22,6 @@ export const ShoppingList = ({ list, checkFn, removeFn }: ListProps) => {
         width: "100%",
         maxWidth: 360,
         margin: "auto",
-        bgcolor: "background.paper",
       }}
     >
       <List>
