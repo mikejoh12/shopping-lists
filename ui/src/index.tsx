@@ -2,11 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { store } from "./store/store";
+import { persistor, store } from "./store/store";
 import { Provider } from "react-redux";
 import UserAlert from "./components/UserAlert";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme";
+import { PersistGate } from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,10 +15,12 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <App />
-        <UserAlert />
-      </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <App />
+          <UserAlert />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );
