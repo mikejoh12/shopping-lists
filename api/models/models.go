@@ -83,7 +83,7 @@ func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
 	return nil
 }
 
-func AddShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
+func AddNewShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
 	t := ShoppingList{
 		ID: primitive.NewObjectID(),
 		OwnerId: ownerId,
@@ -95,6 +95,19 @@ func AddShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
 		return "", err
 	}
 	return t.ID.Hex(), nil
+}
+
+func AddShoppingLists(sl []ShoppingList, ownerId primitive.ObjectID) error {
+	slInterface := make([]interface{}, len(sl))
+	for i := range sl {
+	  slInterface[i] = sl[i]
+	}
+
+	_, err := config.ShoppingLists.InsertMany(context.TODO(), slInterface)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {

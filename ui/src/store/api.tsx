@@ -10,13 +10,16 @@ import { setCredentials } from "../features/userSlice";
 export interface ShoppingListItem {
   id: string;
   name: string;
-  listId: string | null;
   isCompleted: boolean;
+}
+
+export interface NewListItemRequest {
+  name: string;
+  listId: string;
 }
 
 export interface ShoppingList {
   id: string;
-  ownerId: number;
   name: string;
   items: ShoppingListItem[];
 }
@@ -69,6 +72,17 @@ export const api = createApi({
       invalidatesTags: ["ShoppingList"],
     }),
 
+    addLists: builder.mutation<void, ShoppingList[]>({
+      query(body) {
+        return {
+          url: `lists/bulk`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
     getAllLists: builder.query<ShoppingList[], void>({
       query: () => "lists",
       providesTags: ["ShoppingList"],
@@ -87,7 +101,7 @@ export const api = createApi({
       invalidatesTags: ["ShoppingList"],
     }),
 
-    addListItem: builder.mutation<ShoppingListItem, Partial<ShoppingListItem>>({
+    addListItem: builder.mutation<void, NewListItemRequest>({
       query(body) {
         return {
           url: `lists/items`,
@@ -161,6 +175,7 @@ export const api = createApi({
 
 export const {
   useAddListMutation,
+  useAddListsMutation,
   useGetAllListsQuery,
   useAddListItemMutation,
   useModifyListItemMutation,

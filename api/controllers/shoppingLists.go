@@ -17,6 +17,18 @@ type NewListItemReq struct {
 	IsCompleted	 bool				`json:"isCompleted"`
 }
 
+type ShoppingListReq struct {
+	ID           string `json:"id"`
+	Name		 string				`json:"name" bson:"name"`
+	Items		 []ListItemReq		`json:"items"`
+}
+
+type ListItemReq struct {
+	ID           string 			`json:"id"`
+	Name   		 string				`json:"name"`
+	IsCompleted	 bool				`json:"isCompleted"`
+}
+
 type ShoppingListsResource struct{}
 
 func (rs ShoppingListsResource) Routes() chi.Router {
@@ -27,6 +39,10 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 	r.Post("/", rs.CreateList)
 	r.Get("/", rs.GetLists)
 	r.Delete("/{id}", rs.DeleteList)
+
+	r.Route("/bulk", func(r chi.Router) {
+		r.Post("/", rs.AddLists)
+	})
 
 	r.Route("/items", func(r chi.Router) {
 		r.Post("/", rs.CreateListItem)
@@ -77,7 +93,7 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	id, err := models.AddShoppingList(l.Name, ownerId)
+	id, err := models.AddNewShoppingList(l.Name, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -110,6 +126,49 @@ func (rs ShoppingListsResource) DeleteList(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// AddLists adds a slice of new shopping lists to the current users lists
+func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	var lists []ShoppingListReq
+	if err := json.NewDecoder(r.Body).Decode(&lists); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	var dbLists []models.ShoppingList
+	for _, l := range lists {
+		newList := models.ShoppingList{
+			ID: primitive.NewObjectID(),
+			OwnerId: ownerId,
+			Name: l.Name,
+		}
+		for _, item := range l.Items {
+			newItem := models.ListItem{
+				ID: primitive.NewObjectID(),
+				Name: item.Name,
+				IsCompleted: item.IsCompleted,
+			}
+			newList.Items = append(newList.Items, newItem)
+		}
+		dbLists = append(dbLists, newList)
+	}
+
+	err = models.AddShoppingLists(dbLists, ownerId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return	
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 // CreateListItem creates a new list item from json data

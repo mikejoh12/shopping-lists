@@ -52,7 +52,6 @@ export default function NewListDialog() {
     } else {
       const newList: ShoppingList = {
         id: uuidv4(),
-        ownerId: 0,
         name: data.name,
         items: [],
       };

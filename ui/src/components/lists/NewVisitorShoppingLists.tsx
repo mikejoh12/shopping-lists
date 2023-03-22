@@ -57,7 +57,6 @@ export default function NewVisitorShoppingLists() {
           id: uuidv4(),
           name: data.newItem,
           isCompleted: false,
-          listId: selectedListId,
         },
       })
     );
