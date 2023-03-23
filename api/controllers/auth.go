@@ -39,8 +39,10 @@ func Authenticator(next http.Handler) http.Handler {
 		if err != nil || token == nil || jwt.Validate(token) != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(struct{Error string `json:"error"`}{
-					Error:	"Unauthorized",		
+			json.NewEncoder(w).Encode(struct {
+				Error string `json:"error"`
+			}{
+				Error: "Unauthorized",
 			})
 			return
 		}
@@ -48,7 +50,6 @@ func Authenticator(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
 
 func init() {
 	tokenAuth = jwtauth.New("HS256", []byte("secret-modify-this"), nil)
@@ -76,25 +77,25 @@ func (rs AuthResource) Routes() chi.Router {
 
 // HashPassword is used to hash the password before it is stored in the DB
 func HashPassword(password string) (string, error) {
-    bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-    if err != nil {
-        return "", err
-    }
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return "", err
+	}
 
-    return string(bytes), nil
+	return string(bytes), nil
 }
 
 // GenerateJWT creates a token containing a userId and expiration time
 func GenerateJWT(userId string) (string, error) {
 	_, tokenString, err := tokenAuth.Encode(map[string]interface{}{
-		"userId": userId,
+		"userId":  userId,
 		"expires": time.Now().Add(time.Minute * 5).Unix(),
 	})
 
 	if err != nil {
 		return "", err
 	}
- 	return tokenString, nil
+	return tokenString, nil
 }
 
 // Login takes the credentials and returns a JWT token in a cookie
@@ -130,63 +131,68 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie := &http.Cookie{
-		Name:	"jwt",
-		Value:	j,
+		Name:   "jwt",
+		Value:  j,
 		MaxAge: 60 * 5,
-		Path: "/",
+		Path:   "/",
 	}
 	http.SetCookie(w, cookie)
-    w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(struct{
-		Username string	`json:"username"`
-		}{u.Name})
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(struct {
+		Username string `json:"username"`
+	}{u.Name})
 }
 
 // Logout deletes the cookie containing the JWT
 func (rs AuthResource) Logout(w http.ResponseWriter, r *http.Request) {
 	c := &http.Cookie{
-		Name:     "jwt",
-		Value:    "",
-		Path:     "/",
+		Name:    "jwt",
+		Value:   "",
+		Path:    "/",
 		Expires: time.Unix(0, 0),
-	
+
 		HttpOnly: true,
 	}
-	
+
 	http.SetCookie(w, c)
 }
 
 // Register takes new user info in json and creates a new user
 func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var c Credentials
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
 
 	sr := config.Users.FindOne(context.TODO(), bson.M{"name": c.Username})
 	if sr.Err() == nil {
-		http.Error(w, http.StatusText(http.StatusConflict), http.StatusConflict)
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(struct {
+			Error string `json:"message"`
+		}{"Username already in use"})
 		return
 	}
 
 	h, err := HashPassword(c.Password)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	u := models.User{
-		ID: primitive.NewObjectID(),
-		Name: c.Username,
+		ID:       primitive.NewObjectID(),
+		Name:     c.Username,
 		Password: h,
 	}
 
 	err = models.AddUser(u)
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)

@@ -5,6 +5,9 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useAddUserMutation } from "../store/api";
+import { useDispatch } from "react-redux";
+import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { useNavigate } from "react-router-dom";
 
 type Inputs = {
   username: string;
@@ -14,6 +17,8 @@ type Inputs = {
 
 export default function Register() {
   const [addUser] = useAddUserMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -27,10 +32,30 @@ export default function Register() {
   const password = React.useRef({});
   password.current = watch("password");
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    addUser({ username: data.username, password: data.password });
-    reset();
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      await addUser({
+        username: data.username,
+        password: data.password,
+      }).unwrap();
+      dispatch(
+        displaySnackBar({
+          msg: "User account created: " + data.username,
+          severity: MsgSeverity.Success,
+        })
+      );
+      navigate("/login");
+    } catch (err: any) {
+      console.log(err);
+      dispatch(
+        displaySnackBar({
+          msg: err.data?.message
+            ? err.data.message
+            : "Error registering new user",
+          severity: MsgSeverity.Error,
+        })
+      );
+    }
   };
 
   return (
