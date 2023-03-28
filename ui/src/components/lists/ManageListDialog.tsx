@@ -10,10 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { setSelectedList } from "../../features/userSlice";
 import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
+import { useAuth } from "../../hooks/useAuth";
+import { removeNewVisitorList } from "../../features/listsSlice";
 
 export default function ManageListDialog() {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
+  const auth = useAuth();
 
   const selectedListId = useSelector(
     (state: RootState) => state.user.selectedListId
@@ -29,13 +32,30 @@ export default function ManageListDialog() {
     setOpen(false);
   };
 
-  function handleDeleteList() {
+  async function handleDeleteList() {
     dispatch(setSelectedList({ id: "" }));
-    deleteList(selectedListId);
-    handleClose();
-    dispatch(
-      displaySnackBar({ msg: "List deleted", severity: MsgSeverity.Success })
-    );
+    try {
+      if (auth.user) {
+        await deleteList(selectedListId).unwrap();
+      } else {
+        dispatch(removeNewVisitorList({ id: selectedListId }));
+      }
+      dispatch(
+        displaySnackBar({
+          msg: "List deleted",
+          severity: MsgSeverity.Success,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        displaySnackBar({
+          msg: "Error deleting list",
+          severity: MsgSeverity.Error,
+        })
+      );
+    } finally {
+      handleClose();
+    }
   }
 
   return (

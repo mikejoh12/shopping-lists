@@ -1,9 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import {
-  api,
-  ShoppingListItem,
-} from "../store/api";
+import { api, ShoppingListItem } from "../store/api";
 import { useSelector } from "react-redux";
 import ListSelect from "../components/lists/ListSelect";
 import NewListDialog from "../components/lists/NewListDialog";
@@ -21,7 +18,7 @@ export default function ShoppingLists() {
     (state: RootState) => state.user.selectedListId
   );
 
-  const newVisitorLists = useSelector(selectLists)
+  const newVisitorLists = useSelector(selectLists);
 
   const selectedList = shoppingLists?.find((list) => {
     return String(list.id) === selectedListId;
@@ -29,10 +26,10 @@ export default function ShoppingLists() {
 
   let sortedList: Array<ShoppingListItem> = [];
   if (selectedList) {
+    console.log("selectedList", selectedList);
     sortedList = [...selectedList.items];
     sortedList.sort(compareFn);
   }
-
 
   function compareFn(a: ShoppingListItem, b: ShoppingListItem) {
     if (a.isCompleted && !b.isCompleted) {

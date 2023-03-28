@@ -20,6 +20,7 @@ export interface NewListItemRequest {
 
 export interface ShoppingList {
   id: string;
+  ownerId: string | null;
   name: string;
   items: ShoppingListItem[];
 }
@@ -38,10 +39,6 @@ export interface RegisterUserRequest {
   password: string;
 }
 
-export interface ShoppingList {
-  name: string;
-}
-
 const baseQuery = fetchBaseQuery({ baseUrl: "/api" });
 const baseQueryWithLogout: BaseQueryFn<
   string | FetchArgs,
@@ -51,7 +48,6 @@ const baseQueryWithLogout: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     api.dispatch(setCredentials(null));
-    alert("You have been logged out");
   }
   return result;
 };

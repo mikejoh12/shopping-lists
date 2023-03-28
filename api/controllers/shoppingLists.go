@@ -12,21 +12,21 @@ import (
 )
 
 type NewListItemReq struct {
-	Name   		 string				`json:"name"`
-	ListId		 string				`json:"listId"`
-	IsCompleted	 bool				`json:"isCompleted"`
+	Name        string `json:"name"`
+	ListId      string `json:"listId"`
+	IsCompleted bool   `json:"isCompleted"`
 }
 
 type ShoppingListReq struct {
-	ID           string `json:"id"`
-	Name		 string				`json:"name" bson:"name"`
-	Items		 []ListItemReq		`json:"items"`
+	ID    string        `json:"id"`
+	Name  string        `json:"name" bson:"name"`
+	Items []ListItemReq `json:"items"`
 }
 
 type ListItemReq struct {
-	ID           string 			`json:"id"`
-	Name   		 string				`json:"name"`
-	IsCompleted	 bool				`json:"isCompleted"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	IsCompleted bool   `json:"isCompleted"`
 }
 
 type ShoppingListsResource struct{}
@@ -62,7 +62,7 @@ func (rs ShoppingListsResource) GetLists(w http.ResponseWriter, r *http.Request)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
-	
+
 	items, err := models.AllShoppingLists(objId)
 	if err != nil {
 		fmt.Println(err)
@@ -78,7 +78,7 @@ func (rs ShoppingListsResource) GetLists(w http.ResponseWriter, r *http.Request)
 
 // CreateList creates a new shopping list from json data
 func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Request) {
-	l := struct{Name string}{}
+	l := struct{ Name string }{}
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -101,9 +101,9 @@ func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Reques
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(struct{
-		Name	string `json:"name"`
-		Id		string `json:"id"`
+	json.NewEncoder(w).Encode(struct {
+		Name string `json:"name"`
+		Id   string `json:"id"`
 	}{l.Name, id})
 }
 
@@ -147,14 +147,15 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 	var dbLists []models.ShoppingList
 	for _, l := range lists {
 		newList := models.ShoppingList{
-			ID: primitive.NewObjectID(),
+			ID:      primitive.NewObjectID(),
 			OwnerId: ownerId,
-			Name: l.Name,
+			Name:    l.Name,
+			Items:   make([]models.ListItem, 0),
 		}
 		for _, item := range l.Items {
 			newItem := models.ListItem{
-				ID: primitive.NewObjectID(),
-				Name: item.Name,
+				ID:          primitive.NewObjectID(),
+				Name:        item.Name,
 				IsCompleted: item.IsCompleted,
 			}
 			newList.Items = append(newList.Items, newItem)
@@ -166,7 +167,7 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
-		return	
+		return
 	}
 	w.WriteHeader(http.StatusCreated)
 }
@@ -254,11 +255,10 @@ func (rs ShoppingListsResource) UpdateListItem(w http.ResponseWriter, r *http.Re
 	}
 
 	li := models.ListItem{
-		ID: liId,
-		Name: itemData.Name,
+		ID:          liId,
+		Name:        itemData.Name,
 		IsCompleted: itemData.IsCompleted,
 	}
-
 
 	err = models.ModifyListItem(ownerId, li)
 	if err != nil {

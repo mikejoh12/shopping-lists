@@ -8,31 +8,29 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 type ListItem struct {
-	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name   		 string				`json:"name"`
-	IsCompleted	 bool				`json:"isCompleted"`
+	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name        string             `json:"name"`
+	IsCompleted bool               `json:"isCompleted"`
 }
 
 type ShoppingList struct {
-	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	OwnerId		 primitive.ObjectID `bson:"ownerId"`
-	Name		 string				`json:"name" bson:"name"`
-	Items		 []ListItem			`json:"items" bson:"items"`
+	ID      primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	OwnerId primitive.ObjectID `json:"ownerId" bson:"ownerId"`
+	Name    string             `json:"name" bson:"name"`
+	Items   []ListItem         `json:"items" bson:"items"`
 }
 
 type User struct {
-	ID            primitive.ObjectID 	`json:"id" bson:"_id,omitempty"`
-	Name   		  string				`json:"name"`
-	Password	  string				`json:"password"`
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name     string             `json:"name"`
+	Password string             `json:"password"`
 }
-
 
 func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 	cursor, err := config.ShoppingLists.Find(context.TODO(), bson.M{"ownerId": userId})
-	if err != nil {			
-		return nil, err	
+	if err != nil {
+		return nil, err
 	}
 	var results []ShoppingList
 
@@ -49,8 +47,8 @@ func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 
 func AddListItem(name string, userId, listId primitive.ObjectID) error {
 	li := ListItem{
-		ID: primitive.NewObjectID(),
-		Name: name,
+		ID:          primitive.NewObjectID(),
+		Name:        name,
 		IsCompleted: false,
 	}
 
@@ -69,7 +67,6 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 
 func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
 
-
 	update := bson.M{
 		"$set": bson.M{
 			"items.$": li,
@@ -85,10 +82,10 @@ func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
 
 func AddNewShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
 	t := ShoppingList{
-		ID: primitive.NewObjectID(),
+		ID:      primitive.NewObjectID(),
 		OwnerId: ownerId,
-		Name: name,
-		Items: make([]ListItem, 0),
+		Name:    name,
+		Items:   make([]ListItem, 0),
 	}
 	_, err := config.ShoppingLists.InsertOne(context.TODO(), t)
 	if err != nil {
@@ -100,7 +97,7 @@ func AddNewShoppingList(name string, ownerId primitive.ObjectID) (string, error)
 func AddShoppingLists(sl []ShoppingList, ownerId primitive.ObjectID) error {
 	slInterface := make([]interface{}, len(sl))
 	for i := range sl {
-	  slInterface[i] = sl[i]
+		slInterface[i] = sl[i]
 	}
 
 	_, err := config.ShoppingLists.InsertMany(context.TODO(), slInterface)
@@ -138,7 +135,7 @@ func RemoveList(listId string, ownerId primitive.ObjectID) error {
 	}
 
 	_, err = config.ShoppingLists.DeleteOne(context.TODO(), bson.M{
-		"_id": listObjId,
+		"_id":     listObjId,
 		"ownerId": ownerId,
 	})
 	if err != nil {
