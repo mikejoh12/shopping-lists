@@ -8,12 +8,14 @@ import UserAlert from "./components/UserAlert";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme";
 import { PersistGate } from "redux-persist/integration/react";
+import { CssBaseline } from "@mui/material";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
+    <CssBaseline />
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>

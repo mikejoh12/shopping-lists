@@ -56,10 +56,10 @@ export default function NewListDialog() {
         name: data.name,
         items: [],
       };
-      reset();
       dispatch(addNewVisitorList(newList));
       dispatch(setSelectedList({ id: newList.id }));
     }
+    reset();
     handleClose();
     dispatch(
       displaySnackBar({
@@ -81,13 +81,18 @@ export default function NewListDialog() {
             <DialogContent>
               <Controller
                 name="name"
+                rules={{ required: true }}
                 control={control}
                 render={({ field }) => <TextField {...field} />}
               />
             </DialogContent>
             <DialogActions>
-              <Button variant="contained" onClick={handleClose} >Cancel</Button>
-              <Button variant="contained" type="submit">Create List</Button>
+              <Button variant="contained" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="contained" type="submit">
+                Create List
+              </Button>
             </DialogActions>
           </form>
         </Dialog>

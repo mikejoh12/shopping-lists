@@ -106,7 +106,7 @@ export default function ShoppingLists() {
           </Typography>
         ) : shoppingLists == null ? (
           <Typography
-            variant="h4"
+            variant="h5"
             component="div"
             gutterBottom
             textAlign="center"
@@ -115,7 +115,7 @@ export default function ShoppingLists() {
           </Typography>
         ) : !selectedListId ? (
           <Typography
-            variant="h4"
+            variant="h5"
             component="div"
             gutterBottom
             textAlign="center"

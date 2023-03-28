@@ -44,6 +44,7 @@ export default function UploadLists() {
       sx={{
         width: "100%",
         margin: "auto",
+        p: 2,
       }}
     >
       <Typography

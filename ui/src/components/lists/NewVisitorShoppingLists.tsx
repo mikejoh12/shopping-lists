@@ -89,7 +89,7 @@ export default function NewVisitorShoppingLists() {
       <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
         {shoppingLists.length === 0 ? (
           <Typography
-            variant="h4"
+            variant="h5"
             component="div"
             gutterBottom
             textAlign="center"
@@ -98,7 +98,7 @@ export default function NewVisitorShoppingLists() {
           </Typography>
         ) : !selectedListId ? (
           <Typography
-            variant="h4"
+            variant="h5"
             component="div"
             gutterBottom
             textAlign="center"
