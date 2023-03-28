@@ -60,15 +60,15 @@ export default function ManageListDialog() {
 
   return (
     <div>
-      <Box sx={{ textAlign: "center", p: 1 }}>
+      <Box sx={{ textAlign: "center", p: 1}}>
         <Button variant="outlined" onClick={handleClickOpen} color="secondary">
           Manage List
         </Button>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Manage List</DialogTitle>
           <DialogContent></DialogContent>
-          <DialogActions>
-            <Button onClick={handleDeleteList}>Delete List</Button>
+          <DialogActions sx={{margin: "auto"}}>
+            <Button variant="contained" onClick={handleDeleteList}>Delete List</Button>
           </DialogActions>
         </Dialog>
       </Box>

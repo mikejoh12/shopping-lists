@@ -26,7 +26,6 @@ export default function ShoppingLists() {
 
   let sortedList: Array<ShoppingListItem> = [];
   if (selectedList) {
-    console.log("selectedList", selectedList);
     sortedList = [...selectedList.items];
     sortedList.sort(compareFn);
   }

@@ -27,7 +27,7 @@ export default function NewListDialog() {
 
   const [addList] = useAddListMutation();
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
     },
@@ -56,6 +56,7 @@ export default function NewListDialog() {
         name: data.name,
         items: [],
       };
+      reset();
       dispatch(addNewVisitorList(newList));
       dispatch(setSelectedList({ id: newList.id }));
     }
@@ -85,8 +86,8 @@ export default function NewListDialog() {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">Create List</Button>
+              <Button variant="contained" onClick={handleClose} >Cancel</Button>
+              <Button variant="contained" type="submit">Create List</Button>
             </DialogActions>
           </form>
         </Dialog>

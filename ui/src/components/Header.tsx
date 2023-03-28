@@ -39,7 +39,17 @@ export const HeaderLayout = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h4"
+              component={Link}
+              to="/"
+              sx={{
+                flexGrow: 1,
+                textDecoration: "none",
+                boxShadow: "none",
+                color: "black",
+              }}
+            >
               Shopping Lists
             </Typography>
             {auth.user && (
