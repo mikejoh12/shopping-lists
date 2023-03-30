@@ -7,14 +7,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import { useAddListMutation } from "../../store/api";
+import { useAddListMutation } from "../../../store/api";
 import { useDispatch } from "react-redux";
-import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
-import { useAuth } from "../../hooks/useAuth";
-import { addNewVisitorList } from "../../features/listsSlice";
-import { ShoppingList } from "../../store/api";
+import { displaySnackBar, MsgSeverity } from "../../../features/uiSlice";
+import { useAuth } from "../../../hooks/useAuth";
+import { addNewVisitorList } from "../../../features/listsSlice";
+import { ShoppingList } from "../../../store/api";
 import { v4 as uuidv4 } from "uuid";
-import { setSelectedList } from "../../features/userSlice";
+import { setSelectedList } from "../../../features/userSlice";
 
 type Inputs = {
   name: string;

@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 type UiState = {
   isSnackBarOpen: boolean;
   snackBarMsg: string;
+  isManageListDialogOpen: boolean;
   snackBarSeverity: MsgSeverity;
 };
 
@@ -14,7 +15,11 @@ export enum MsgSeverity {
 
 const slice = createSlice({
   name: "ui",
-  initialState: { isSnackBarOpen: false, snackBarMsg: "" } as UiState,
+  initialState: {
+    isSnackBarOpen: false,
+    snackBarMsg: "",
+    isManageListDialogOpen: false,
+  } as UiState,
   reducers: {
     displaySnackBar: (
       state,
@@ -29,9 +34,12 @@ const slice = createSlice({
       state.snackBarMsg = "";
       state.snackBarSeverity = MsgSeverity.Success;
     },
+    setIsManageListDialogOpen: (state, action: PayloadAction<boolean>) => {
+      state.isManageListDialogOpen = action.payload
+    }
   },
 });
 
-export const { displaySnackBar, hideSnackBar } = slice.actions;
+export const { displaySnackBar, hideSnackBar, setIsManageListDialogOpen } = slice.actions;
 
 export default slice.reducer;

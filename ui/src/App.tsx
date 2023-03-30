@@ -3,9 +3,10 @@ import Login from "./views/Login";
 import { HeaderLayout } from "./components/Header";
 import Register from "./views/Register";
 import { RequireAuth } from "./components/RequireAuth";
-import ShoppingLists from "./views/ShoppingLists";
+import ShoppingLists from "./views/ManageList";
 import Account from "./views/Account";
 import UploadLists from "./views/UploadLists";
+import ViewLists from "./views/ViewLists";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <ViewLists />,
+      },
+      {
+        path: "/manage-list",
         element: <ShoppingLists />,
       },
       {

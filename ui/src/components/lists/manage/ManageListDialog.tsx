@@ -5,18 +5,27 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
-import { useDeleteListMutation } from "../../store/api";
+import { useDeleteListMutation } from "../../../store/api";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { setSelectedList } from "../../features/userSlice";
-import { displaySnackBar, MsgSeverity } from "../../features/uiSlice";
-import { useAuth } from "../../hooks/useAuth";
-import { removeNewVisitorList } from "../../features/listsSlice";
+import { RootState } from "../../../store/store";
+import { setSelectedList } from "../../../features/userSlice";
+import {
+  displaySnackBar,
+  MsgSeverity,
+  setIsManageListDialogOpen,
+} from "../../../features/uiSlice";
+import { useAuth } from "../../../hooks/useAuth";
+import { removeNewVisitorList } from "../../../features/listsSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function ManageListDialog() {
-  const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const auth = useAuth();
+  const navigate = useNavigate();
+
+  const isManageListDialogOpen = useSelector(
+    (state: RootState) => state.ui.isManageListDialogOpen
+  );
 
   const selectedListId = useSelector(
     (state: RootState) => state.user.selectedListId
@@ -24,12 +33,8 @@ export default function ManageListDialog() {
 
   const [deleteList] = useDeleteListMutation();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
+    dispatch(setIsManageListDialogOpen(false));
   };
 
   async function handleDeleteList() {
@@ -55,20 +60,20 @@ export default function ManageListDialog() {
       );
     } finally {
       handleClose();
+      navigate("/");
     }
   }
 
   return (
     <div>
-      <Box sx={{ textAlign: "center", p: 1}}>
-        <Button variant="outlined" onClick={handleClickOpen} color="secondary">
-          Manage List
-        </Button>
-        <Dialog open={open} onClose={handleClose}>
+      <Box sx={{ textAlign: "center", p: 1 }}>
+        <Dialog open={isManageListDialogOpen} onClose={handleClose}>
           <DialogTitle>Manage List</DialogTitle>
           <DialogContent></DialogContent>
-          <DialogActions sx={{margin: "auto"}}>
-            <Button variant="contained" onClick={handleDeleteList}>Delete List</Button>
+          <DialogActions sx={{ margin: "auto" }}>
+            <Button variant="contained" onClick={handleDeleteList}>
+              Delete List
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
