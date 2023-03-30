@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { ShoppingList } from "../../../store/api";
 import { useDispatch } from "react-redux";
 import List from "@mui/material/List";
-import { Button, ListItem, ListItemText } from "@mui/material";
+import { Button, ListItem, ListItemText, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { setSelectedList } from "../../../features/userSlice";
 
@@ -21,20 +21,27 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
   }
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: 400, margin: "auto", p: 2 }}>
+    <Box sx={{ minWidth: 120, maxWidth: 400, margin: "auto", p: 2, textAlign: "center" }}>
+      { lists && lists.length > 0 ?
       <List>
         {lists?.map((list: ShoppingList, idx) => {
           return (
-            <ListItem
-              disablePadding
-              key={list.id}
-              onClick={() => handleListClick(list.id)}
-            >
-              <Button>{list.name}</Button>
+            <ListItem key={list.id} onClick={() => handleListClick(list.id)}>
+              <Button
+                variant="contained"
+                sx={{ margin: "auto", textTransform: "none" }}
+              >
+                {list.name}
+              </Button>
             </ListItem>
           );
         })}
       </List>
+      :
+      <Typography>
+        No lists found
+      </Typography>
+      }
     </Box>
   );
 }
