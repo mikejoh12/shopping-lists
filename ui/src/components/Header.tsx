@@ -52,11 +52,6 @@ export const HeaderLayout = () => {
             >
               Shopping Lists
             </Typography>
-            {auth.user && (
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {auth.user}
-              </Typography>
-            )}
             {selectedUser ? (
               <>
                 <Button component={Link} color="inherit" to="/account">

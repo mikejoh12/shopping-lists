@@ -29,7 +29,7 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
             <ListItem key={list.id} onClick={() => handleListClick(list.id)}>
               <Button
                 variant="contained"
-                sx={{ margin: "auto", textTransform: "none" }}
+                sx={{ margin: "auto", textTransform: "none", minWidth: "250px" }}
               >
                 {list.name}
               </Button>

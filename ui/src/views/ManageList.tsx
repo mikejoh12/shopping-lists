@@ -37,13 +37,13 @@ export default function ManageList() {
     <>
       {auth.user ? (
         <>
-          <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
+          <Box sx={{ height: 400, margin: "auto", padding: 1 }}>
             <LoggedInManageList />
           </Box>
         </>
       ) : (
         <>
-          <Box sx={{ height: 400, width: "50%", margin: "auto", padding: 1 }}>
+          <Box sx={{ height: 400, margin: "auto", padding: 1 }}>
             <NewVisitorManageList />
           </Box>
         </>
