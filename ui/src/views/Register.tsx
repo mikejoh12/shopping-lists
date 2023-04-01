@@ -25,8 +25,6 @@ export default function Register() {
     handleSubmit,
     control,
     watch,
-    reset,
-    formState: { errors },
   } = useForm<Inputs>();
 
   const password = React.useRef({});
