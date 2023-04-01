@@ -8,12 +8,10 @@ import { setCredentials, setSelectedList } from "../features/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
-import { useAuth } from "../hooks/useAuth";
 
 export const HeaderLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const auth = useAuth();
 
   const selectedUser = useSelector((state: RootState) => state.user.name);
 

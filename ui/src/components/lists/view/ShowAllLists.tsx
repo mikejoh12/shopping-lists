@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { ShoppingList } from "../../../store/api";
 import { useDispatch } from "react-redux";
 import List from "@mui/material/List";
-import { Button, ListItem, ListItemText, Typography } from "@mui/material";
+import { Button, ListItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { setSelectedList } from "../../../features/userSlice";
 

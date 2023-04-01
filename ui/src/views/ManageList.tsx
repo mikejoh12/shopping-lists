@@ -2,7 +2,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { api, ShoppingListItem } from "../store/api";
 import { useSelector } from "react-redux";
-import NewListDialog from "../components/lists/view/NewListDialog";
 import { RootState } from "../store/store";
 import { useAuth } from "../hooks/useAuth";
 import LoggedInManageList from "../components/lists/manage/LoggedInManageList";
