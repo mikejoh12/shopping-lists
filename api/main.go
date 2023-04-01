@@ -3,7 +3,9 @@ package main
 import (
 	"embed"
 	"io/fs"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -13,6 +15,7 @@ import (
 )
 
 // Embeds the React static bundle into the Go binary
+//
 //go:embed dist
 var staticFS embed.FS
 
@@ -30,7 +33,11 @@ func main() {
 	r.Mount("/api/auth", controllers.AuthResource{}.Routes())
 	r.Mount("/api/lists", controllers.ShoppingListsResource{}.Routes())
 
-	http.ListenAndServe(":8080", r)
+	port := os.Getenv("PORT")
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, r); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func FileServer(r chi.Router, path string, root http.FileSystem) {
@@ -54,9 +61,9 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 
 func getFileSystem(embedFS embed.FS) http.FileSystem {
 
-    // Get the build subdirectory as the
-    // root directory so that it can be passed
-    // to the http.FileServer
+	// Get the build subdirectory as the
+	// root directory so that it can be passed
+	// to the http.FileServer
 	fsys, err := fs.Sub(embedFS, "dist")
 	if err != nil {
 		panic(err)

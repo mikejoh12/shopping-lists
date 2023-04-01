@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,10 +13,8 @@ import (
 var DB *mongo.Database
 var ShoppingLists, Users *mongo.Collection
 
-const uri = "mongodb://localhost"
-
 func init() {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_DB_URI")))
 	if err != nil {
 		panic(err)
 	}
@@ -29,4 +28,3 @@ func init() {
 	ShoppingLists = client.Database("go-todo").Collection("shoppingLists")
 	Users = client.Database("go-todo").Collection("users")
 }
-
