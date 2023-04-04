@@ -15,33 +15,42 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
   const navigate = useNavigate();
 
   function handleListClick(id: string) {
-    console.log(id);
     dispatch(setSelectedList({ id: id as string }));
     navigate("/manage-list");
   }
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: 400, margin: "auto", p: 2, textAlign: "center" }}>
-      { lists && lists.length > 0 ?
-      <List>
-        {lists?.map((list: ShoppingList, idx) => {
-          return (
-            <ListItem key={list.id} onClick={() => handleListClick(list.id)}>
-              <Button
-                variant="contained"
-                sx={{ margin: "auto", textTransform: "none", minWidth: "250px" }}
-              >
-                {list.name}
-              </Button>
-            </ListItem>
-          );
-        })}
-      </List>
-      :
-      <Typography>
-        No lists found
-      </Typography>
-      }
+    <Box
+      sx={{
+        minWidth: 120,
+        maxWidth: 400,
+        margin: "auto",
+        p: 2,
+        textAlign: "center",
+      }}
+    >
+      {lists && lists.length > 0 ? (
+        <List>
+          {lists?.map((list: ShoppingList, idx) => {
+            return (
+              <ListItem key={list.id} onClick={() => handleListClick(list.id)}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    margin: "auto",
+                    textTransform: "none",
+                    minWidth: "250px",
+                  }}
+                >
+                  {list.name}
+                </Button>
+              </ListItem>
+            );
+          })}
+        </List>
+      ) : (
+        <Typography>No lists found</Typography>
+      )}
     </Box>
   );
 }

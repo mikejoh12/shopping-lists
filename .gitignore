@@ -4,4 +4,9 @@
 # Directory for binary executable file
 /bin
 
+# GC App Engine files
+app.yaml
+.gcloudignore
+
+# Env variables (used locally)
 .env
