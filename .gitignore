@@ -1,5 +1,5 @@
 # React bundle dir which is embedded into the go binary
-/api/dist
+/static-ui
 
 # Directory for binary executable file
 /bin
