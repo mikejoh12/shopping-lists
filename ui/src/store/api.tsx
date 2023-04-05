@@ -97,6 +97,16 @@ export const api = createApi({
       invalidatesTags: ["ShoppingList"],
     }),
 
+    checkoutList: builder.mutation<void, string>({
+      query(id) {
+        return {
+          url: `lists/checkout/${id}`,
+          method: "POST",
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
     addListItem: builder.mutation<void, NewListItemRequest>({
       query(body) {
         return {
@@ -131,6 +141,8 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
+
+
 
     addUser: builder.mutation<
       RegisterUserRequest,
@@ -172,6 +184,7 @@ export const api = createApi({
 export const {
   useAddListMutation,
   useAddListsMutation,
+  useCheckoutListMutation,
   useGetAllListsQuery,
   useAddListItemMutation,
   useModifyListItemMutation,

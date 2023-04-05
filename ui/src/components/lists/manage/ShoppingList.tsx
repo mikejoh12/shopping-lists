@@ -40,13 +40,18 @@ export const ShoppingList = ({ list, name, checkFn, removeFn }: ListProps) => {
         textAlign: "center",
       }}
     >
-      <Stack direction="row" justifyContent={"center"} spacing={2}>
-        <IconButton size="large">
-          <ArrowBackIcon onClick={() => navigate("/")} />
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <IconButton size="large" onClick={() => navigate("/")}>
+          <ArrowBackIcon />
         </IconButton>
         <Typography variant="h4">{name}</Typography>
-        <IconButton size="large">
-          <MoreVertIcon onClick={handleManageListClick} />
+        <IconButton size="large" onClick={handleManageListClick}>
+          <MoreVertIcon />
         </IconButton>
       </Stack>
 

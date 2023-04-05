@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mikejoh12/go-todo/config"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,7 +12,7 @@ import (
 type ListItem struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name        string             `json:"name"`
-	IsCompleted bool               `json:"isCompleted"`
+	IsCompleted bool               `json:"isCompleted" bson:"isCompleted"`
 }
 
 type ShoppingList struct {
@@ -66,7 +67,6 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 }
 
 func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
-
 	update := bson.M{
 		"$set": bson.M{
 			"items.$": li,
@@ -104,6 +104,26 @@ func AddShoppingLists(sl []ShoppingList, ownerId primitive.ObjectID) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func CheckoutList(listId primitive.ObjectID) error {
+	filter := bson.M{"_id": listId}
+
+	update := bson.M{
+		"$pull": bson.M{
+			"items": bson.M{
+				"isCompleted": true,
+			},
+		},
+	}
+
+	updatedResult, err := config.ShoppingLists.UpdateOne(context.TODO(), filter, update)
+	fmt.Println("Update result", updatedResult.ModifiedCount)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

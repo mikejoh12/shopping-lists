@@ -1,10 +1,4 @@
-import {
-  Box,
-  Divider,
-  Typography,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { Box, Divider, Typography, IconButton, Stack } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 export const Footer = () => {
@@ -29,10 +23,12 @@ export const Footer = () => {
           >
             Shopping Lists
           </Typography>
-          <IconButton>
-            <GitHubIcon
-              onClick={() => window.open("https://github.com/mikejoh12/go-todo", "_blank")}
-            />
+          <IconButton
+            onClick={() =>
+              window.open("https://github.com/mikejoh12/go-todo", "_blank")
+            }
+          >
+            <GitHubIcon />
           </IconButton>
         </Stack>
       </Box>

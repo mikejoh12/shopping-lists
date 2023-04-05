@@ -30,13 +30,18 @@ const slice = createSlice({
       let listIdx = state.lists.findIndex((list) => list.id === action.payload.listId);
       state.lists[listIdx].items = state.lists[listIdx].items.filter((item) => item.id !== action.payload.itemId)
     },
+    removeCheckedItems: (state, action: PayloadAction<{listId: string}>) => {
+      let listIdx = state.lists.findIndex((list) => list.id === action.payload.listId);
+      state.lists[listIdx].items = state.lists[listIdx].items.filter((item) => !item.isCompleted)
+
+    },
     clearLists: (state, action: PayloadAction<void>) => {
       state.lists = []
     }
   },
 });
 
-export const { addNewVisitorList, removeNewVisitorList, addNewVisitorItem, toggleCheckboxNewVisitorItem, removeNewVisitorItem, clearLists } = slice.actions;
+export const { addNewVisitorList, removeNewVisitorList, addNewVisitorItem, toggleCheckboxNewVisitorItem, removeNewVisitorItem, removeCheckedItems, clearLists } = slice.actions;
 
 export const selectSelectedList = (state: RootState) =>
   state.lists.lists.find(

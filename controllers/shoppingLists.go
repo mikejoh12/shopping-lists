@@ -39,6 +39,7 @@ func (rs ShoppingListsResource) Routes() chi.Router {
 	r.Post("/", rs.CreateList)
 	r.Get("/", rs.GetLists)
 	r.Delete("/{id}", rs.DeleteList)
+	r.Post("/checkout/{id}", rs.CheckoutList)
 
 	r.Route("/bulk", func(r chi.Router) {
 		r.Post("/", rs.AddLists)
@@ -170,6 +171,24 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+// CheckoutList removes completed items from a shopping list
+func (rs ShoppingListsResource) CheckoutList(w http.ResponseWriter, r *http.Request) {
+	listId := chi.URLParam(r, "id")
+	fmt.Println("Got request for checkout with id", listId)
+	listObjId, err := primitive.ObjectIDFromHex(listId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+	err = models.CheckoutList(listObjId)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
 }
 
 // CreateListItem creates a new list item from json data
