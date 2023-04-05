@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./views/Login";
-import { HeaderLayout } from "./components/Header";
+import { PageLayout } from "./components/PageLayout";
 import Register from "./views/Register";
 import { RequireAuth } from "./components/RequireAuth";
 import ShoppingLists from "./views/ManageList";
@@ -10,7 +10,7 @@ import ViewLists from "./views/ViewLists";
 
 const router = createBrowserRouter([
   {
-    element: <HeaderLayout />,
+    element: <PageLayout />,
     children: [
       {
         path: "/",

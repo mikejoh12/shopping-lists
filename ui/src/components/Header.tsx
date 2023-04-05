@@ -1,4 +1,3 @@
-import { Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Box, AppBar, Toolbar, Typography } from "@mui/material";
 import { api, useLogoutUserMutation } from "../store/api";
@@ -9,7 +8,7 @@ import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 
-export const HeaderLayout = () => {
+export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,7 +33,7 @@ export const HeaderLayout = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
         <AppBar position="static">
           <Toolbar>
             <Typography
@@ -72,7 +71,6 @@ export const HeaderLayout = () => {
           </Toolbar>
         </AppBar>
       </Box>
-      <Outlet />
     </>
   );
 };
