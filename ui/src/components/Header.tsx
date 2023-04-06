@@ -45,6 +45,8 @@ export const Header = () => {
                 textDecoration: "none",
                 boxShadow: "none",
                 color: "black",
+                fontWeight: "bold",
+                fontStyle: "italic",
               }}
             >
               Shopping Lists

@@ -7,7 +7,7 @@ export const PageLayout = () => {
   return (
     <Box sx={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
       <Header />
-      <Box sx={{flexGrow: 1}}>
+      <Box sx={{flexGrow: 1, p: 2}}>
       <Outlet />
       </Box>
       <Footer />
