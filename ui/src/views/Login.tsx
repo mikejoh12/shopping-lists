@@ -11,6 +11,7 @@ import { setCredentials } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 import { selectLists } from "../features/listsSlice";
+import { LinearProgress } from "@mui/material";
 
 type Inputs = {
   username: string;
@@ -19,6 +20,7 @@ type Inputs = {
 
 export default function Login() {
   const [loginUser] = useLoginUserMutation();
+  const [loading, setLoading] = React.useState<Boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const newVisitorLists = useSelector(selectLists);
@@ -27,6 +29,7 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
+      setLoading(true);
       const user = await loginUser(data).unwrap();
       dispatch(setCredentials(user.username));
       reset();
@@ -46,6 +49,8 @@ export default function Login() {
         })
       );
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +99,11 @@ export default function Login() {
           </Button>
         </Grid2>
       </Grid2>
+      { loading &&
+      <Box sx={{ width: "75%", pt: 5, margin: 'auto' }}>
+        <LinearProgress />
+      </Box>
+      }
     </Box>
   );
 }

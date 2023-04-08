@@ -15,6 +15,7 @@ import { addNewVisitorList } from "../../../features/listsSlice";
 import { ShoppingList } from "../../../store/api";
 import { v4 as uuidv4 } from "uuid";
 import { setSelectedList } from "../../../features/userSlice";
+import { Stack } from "@mui/material";
 
 type Inputs = {
   name: string;
@@ -71,11 +72,11 @@ export default function NewListDialog() {
 
   return (
     <div>
-      <Box sx={{ textAlign: "center", p: 1 }}>
+      <Box sx={{ textAlign: "center", margin: 'auto', p: 1 }}>
         <Button variant="contained" color="secondary" onClick={handleClickOpen}>
           Create new list
         </Button>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} sx={{ textAlign: 'center'}}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogTitle>Enter new list name</DialogTitle>
             <DialogContent>
@@ -86,13 +87,16 @@ export default function NewListDialog() {
                 render={({ field }) => <TextField {...field} />}
               />
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Stack direction="row" spacing={1}>
               <Button variant="contained" onClick={handleClose}>
                 Cancel
               </Button>
               <Button variant="contained" type="submit">
-                Create List
+                Create
               </Button>
+              </Stack>
+
             </DialogActions>
           </form>
         </Dialog>
