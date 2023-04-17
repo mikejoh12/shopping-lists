@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import { Box, AppBar, Toolbar, Typography } from "@mui/material";
+import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 import { api, useLogoutUserMutation } from "../store/api";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import { setCredentials, setSelectedList } from "../features/userSlice";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
+import { AccountCircle } from "@mui/icons-material";
+import EmailIcon from "@mui/icons-material/Email";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -53,9 +55,22 @@ export const Header = () => {
             </Typography>
             {selectedUser ? (
               <>
-                <Button component={Link} color="inherit" to="/account">
-                  Account
-                </Button>
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  component={Link}
+                  to="/mail"
+                >
+                  <EmailIcon />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  component={Link}
+                  to="/account"
+                >
+                  <AccountCircle />
+                </IconButton>
                 <Button color="inherit" onClick={(e) => handleLogout(e)}>
                   Log out
                 </Button>

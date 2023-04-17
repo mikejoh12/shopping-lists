@@ -15,6 +15,7 @@ import ManageListDialog from "./ManageListDialog";
 import { displaySnackBar, MsgSeverity } from "../../../features/uiSlice";
 import { ShoppingList } from "./ShoppingList";
 import { SubmitHandler, useForm } from "react-hook-form";
+import ShareListDialog from "./ShareListDialog";
 
 type Inputs = {
   newItem: string;
@@ -125,6 +126,7 @@ export default function ShoppingLists() {
         ) : (
           <>
             <ManageListDialog />
+            <ShareListDialog />
             <ShoppingList
               list={sortedList}
               name={selectedList ? selectedList.name : ""}

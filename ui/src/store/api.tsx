@@ -21,8 +21,12 @@ export interface NewListItemRequest {
 export interface ShoppingList {
   id: string;
   ownerId: string | null;
+  ownerName: string;
   name: string;
   items: ShoppingListItem[];
+  sharingIds: string[];
+  sharingInviteIds: string[];
+  sharingNames: string[];
 }
 
 export interface LoginRequest {
@@ -37,6 +41,16 @@ export interface UserResponse {
 export interface RegisterUserRequest {
   username: string;
   password: string;
+}
+
+export interface ShareRequest {
+  listId: string;
+  userName: string;
+}
+
+export interface RespondToShareInviteRequest {
+  listId: string;
+  isAccepting: boolean;
 }
 
 const baseQuery = fetchBaseQuery({ baseUrl: "/api" });
@@ -79,6 +93,28 @@ export const api = createApi({
       invalidatesTags: ["ShoppingList"],
     }),
 
+    ShareList: builder.mutation<void, ShareRequest>({
+      query(body) {
+        return {
+          url: `share-lists/create`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
+    RespondToShareInvite: builder.mutation<void, RespondToShareInviteRequest>({
+      query(body) {
+        return {
+          url: `share-lists/respond`,
+          method: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["ShoppingList"],
+    }),
+
     getAllLists: builder.query<ShoppingList[], void>({
       query: () => "lists",
       providesTags: ["ShoppingList"],
@@ -105,6 +141,11 @@ export const api = createApi({
         };
       },
       invalidatesTags: ["ShoppingList"],
+    }),
+
+    getAllShareInviteLists: builder.query<ShoppingList[], void>({
+      query: () => "share-lists",
+      providesTags: ["ShoppingList"],
     }),
 
     addListItem: builder.mutation<void, NewListItemRequest>({
@@ -141,8 +182,6 @@ export const api = createApi({
       },
       invalidatesTags: ["ShoppingList"],
     }),
-
-
 
     addUser: builder.mutation<
       RegisterUserRequest,
@@ -184,8 +223,11 @@ export const api = createApi({
 export const {
   useAddListMutation,
   useAddListsMutation,
+  useShareListMutation,
+  useRespondToShareInviteMutation,
   useCheckoutListMutation,
   useGetAllListsQuery,
+  useGetAllShareInviteListsQuery,
   useAddListItemMutation,
   useModifyListItemMutation,
   useDeleteListMutation,

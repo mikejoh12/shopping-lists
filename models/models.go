@@ -7,6 +7,7 @@ import (
 	"github.com/mikejoh12/go-todo/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ListItem struct {
@@ -16,10 +17,14 @@ type ListItem struct {
 }
 
 type ShoppingList struct {
-	ID      primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	OwnerId primitive.ObjectID `json:"ownerId" bson:"ownerId"`
-	Name    string             `json:"name" bson:"name"`
-	Items   []ListItem         `json:"items" bson:"items"`
+	ID               primitive.ObjectID   `json:"id" bson:"_id,omitempty"`
+	OwnerId          primitive.ObjectID   `json:"ownerId" bson:"ownerId"`
+	OwnerName        string               `json:"ownerName" bson:"ownerName"`
+	Name             string               `json:"name" bson:"name"`
+	Items            []ListItem           `json:"items" bson:"items"`
+	SharingIds       []primitive.ObjectID `json:"sharingIds" bson:"sharingIds"`
+	SharingInviteIds []primitive.ObjectID `json:"sharingInviteIds" bson:"sharingInviteIds"`
+	SharingNames     []string             `json:"sharingNames" bson:"sharingNames"`
 }
 
 type User struct {
@@ -29,21 +34,55 @@ type User struct {
 }
 
 func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
-	cursor, err := config.ShoppingLists.Find(context.TODO(), bson.M{"ownerId": userId})
+
+	pipeline := mongo.Pipeline{
+		{ // Match the shopping lists where the specified user is either the owner or one of the sharers
+			{Key: "$match", Value: bson.M{
+				"$or": []interface{}{
+					bson.M{"ownerId": userId},
+					bson.M{"sharingIds": userId},
+				},
+			}},
+		},
+		{ // Lookup the owner user by ID and add their name to the shopping list document
+			{Key: "$lookup", Value: bson.M{
+				"from":         "users",
+				"localField":   "ownerId",
+				"foreignField": "_id",
+				"as":           "owner",
+			}},
+		},
+		{ // Add a new field "ownerName" to the shopping list document with the owner's name
+			{Key: "$addFields", Value: bson.M{
+				"ownerName": bson.M{"$arrayElemAt": []interface{}{"$owner.name", 0}},
+			}},
+		},
+		{ // Lookup the sharing users by ID and add their names to the shopping list document
+			{Key: "$lookup", Value: bson.M{
+				"from":         "users",
+				"localField":   "sharingIds",
+				"foreignField": "_id",
+				"as":           "sharings",
+			}},
+		},
+		{ // Add a new field "sharingNames" to the shopping list document with the sharing users' names
+			{Key: "$addFields", Value: bson.M{
+				"sharingNames": "$sharings.name",
+			}},
+		},
+	}
+
+	var result []ShoppingList
+	cursor, err := config.ShoppingLists.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, err
 	}
-	var results []ShoppingList
-
-	if err = cursor.All(context.TODO(), &results); err != nil {
+	defer cursor.Close(context.Background())
+	if err = cursor.All(context.Background(), &result); err != nil {
 		return nil, err
 	}
 
-	for _, result := range results {
-		cursor.Decode(&result)
-	}
-
-	return &results, nil
+	return &result, nil
 }
 
 func AddListItem(name string, userId, listId primitive.ObjectID) error {
@@ -53,12 +92,20 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 		IsCompleted: false,
 	}
 
+	filter := bson.M{
+		"_id": listId,
+		"$or": bson.A{
+			bson.M{"ownerId": userId},
+			bson.M{"sharingIds": userId},
+		},
+	}
+
 	update := bson.M{
 		"$push": bson.M{
 			"items": li,
 		},
 	}
-	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId, "_id": listId}, update)
+	_, err := config.ShoppingLists.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
 		return err
@@ -67,13 +114,21 @@ func AddListItem(name string, userId, listId primitive.ObjectID) error {
 }
 
 func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
+	filter := bson.M{
+		"items._id": li.ID,
+		"$or": bson.A{
+			bson.M{"ownerId": userId},
+			bson.M{"sharingIds": userId},
+		},
+	}
+
 	update := bson.M{
 		"$set": bson.M{
 			"items.$": li,
 		},
 	}
 
-	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": userId, "items._id": li.ID}, update)
+	_, err := config.ShoppingLists.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}
@@ -82,10 +137,12 @@ func ModifyListItem(userId primitive.ObjectID, li ListItem) error {
 
 func AddNewShoppingList(name string, ownerId primitive.ObjectID) (string, error) {
 	t := ShoppingList{
-		ID:      primitive.NewObjectID(),
-		OwnerId: ownerId,
-		Name:    name,
-		Items:   make([]ListItem, 0),
+		ID:               primitive.NewObjectID(),
+		OwnerId:          ownerId,
+		Name:             name,
+		Items:            make([]ListItem, 0),
+		SharingIds:       make([]primitive.ObjectID, 0),
+		SharingInviteIds: make([]primitive.ObjectID, 0),
 	}
 	_, err := config.ShoppingLists.InsertOne(context.TODO(), t)
 	if err != nil {
@@ -127,10 +184,17 @@ func CheckoutList(listId primitive.ObjectID) error {
 	return nil
 }
 
-func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {
+func RemoveListItem(itemId string, userId primitive.ObjectID) error {
 	objId, err := primitive.ObjectIDFromHex(itemId)
 	if err != nil {
 		return err
+	}
+
+	filter := bson.M{
+		"$or": bson.A{
+			bson.M{"ownerId": userId},
+			bson.M{"sharingIds": userId},
+		},
 	}
 
 	update := bson.M{
@@ -141,27 +205,31 @@ func RemoveListItem(itemId string, ownerId primitive.ObjectID) error {
 		},
 	}
 
-	_, err = config.ShoppingLists.UpdateMany(context.TODO(), bson.M{"ownerId": ownerId}, update)
+	_, err = config.ShoppingLists.UpdateMany(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func RemoveList(listId string, ownerId primitive.ObjectID) error {
+func RemoveList(listId string, ownerId primitive.ObjectID) (success bool, err error) {
 	listObjId, err := primitive.ObjectIDFromHex(listId)
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	_, err = config.ShoppingLists.DeleteOne(context.TODO(), bson.M{
+	dr, err := config.ShoppingLists.DeleteOne(context.TODO(), bson.M{
 		"_id":     listObjId,
 		"ownerId": ownerId,
 	})
+
 	if err != nil {
-		return err
+		return false, err
+	} else if dr.DeletedCount == 0 {
+		return false, nil
 	}
-	return nil
+
+	return true, nil
 }
 
 func AddUser(u User) error {

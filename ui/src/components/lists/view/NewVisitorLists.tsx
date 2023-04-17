@@ -35,6 +35,12 @@ export default function NewVisitorLists() {
                 </ListItemIcon>
                 <ListItemText primary="Create an account for increased functionality and to synchronize your lists between different devices." />
               </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <CheckBoxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Share your lists with others users such as family or team-members." />
+              </ListItem>
             </List>
           </CardContent>
         </Paper>

@@ -16,6 +16,7 @@ import {
   displaySnackBar,
   MsgSeverity,
   setIsManageListDialogOpen,
+  setIsShareListDialogOpen,
 } from "../../../features/uiSlice";
 import { useAuth } from "../../../hooks/useAuth";
 import {
@@ -89,6 +90,11 @@ export default function ManageListDialog() {
     }
   }
 
+  async function handleShareList() {
+    dispatch(setIsManageListDialogOpen(false));
+    dispatch(setIsShareListDialogOpen(true));
+  }
+
   return (
     <div>
       <Box sx={{ textAlign: "center", p: 1 }}>
@@ -97,8 +103,13 @@ export default function ManageListDialog() {
           <DialogContent></DialogContent>
           <DialogActions sx={{ margin: "auto" }}>
             <Button variant="contained" onClick={handleDeletePurchasedItems}>
-              Delete Purchased Items
+              Check Out
             </Button>
+            {auth.user && (
+              <Button variant="contained" onClick={handleShareList}>
+                Share List
+              </Button>
+            )}
             <Button variant="contained" onClick={handleDeleteList}>
               Delete List
             </Button>

@@ -7,6 +7,7 @@ import ShoppingLists from "./views/ManageList";
 import Account from "./views/Account";
 import UploadLists from "./views/UploadLists";
 import ViewLists from "./views/ViewLists";
+import MailBox from "./views/MailBox";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Account />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/mail",
+        element: (
+          <RequireAuth>
+            <MailBox />
           </RequireAuth>
         ),
       },

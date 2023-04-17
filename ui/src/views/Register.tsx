@@ -8,9 +8,11 @@ import { useAddUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@mui/material";
 
 type Inputs = {
   username: string;
+  email: string;
   password: string;
   passwordConfirm: string;
 };
@@ -20,12 +22,7 @@ export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-  } = useForm<Inputs>();
+  const { register, handleSubmit, control, watch } = useForm<Inputs>();
 
   const password = React.useRef({});
   password.current = watch("password");
@@ -33,12 +30,12 @@ export default function Register() {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       await addUser({
-        username: data.username,
+        username: data.email,
         password: data.password,
       }).unwrap();
       dispatch(
         displaySnackBar({
-          msg: "User account created: " + data.username,
+          msg: "User account created: " + data.email,
           severity: MsgSeverity.Success,
         })
       );
@@ -76,13 +73,29 @@ export default function Register() {
         spacing={2}
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* register your input into the hook by invoking the "register" function */}
         <Grid2>
-          <TextField
-            id="username"
-            label="Username"
-            variant="outlined"
-            {...register("username", { required: true })}
+          <Controller
+            name="email"
+            defaultValue=""
+            control={control}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="Email"
+                variant="filled"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+                type="email"
+              />
+            )}
+            rules={{
+              required: "Email required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Entered value does not match email format",
+              },
+            }}
           />
         </Grid2>
         <Grid2>

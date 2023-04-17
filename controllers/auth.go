@@ -185,9 +185,9 @@ func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := models.User{
-		ID:       primitive.NewObjectID(),
-		Name:     c.Username,
-		Password: h,
+		ID:            primitive.NewObjectID(),
+		Name:          c.Username,
+		Password:      h,
 	}
 
 	err = models.AddUser(u)

@@ -37,6 +37,7 @@ func main() {
 
 	r.Mount("/api/auth", controllers.AuthResource{}.Routes())
 	r.Mount("/api/lists", controllers.ShoppingListsResource{}.Routes())
+	r.Mount("/api/share-lists", controllers.ShareListsResource{}.Routes())
 
 	port := os.Getenv("PORT")
 	log.Printf("Listening on port %s", port)

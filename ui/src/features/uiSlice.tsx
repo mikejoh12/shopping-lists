@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
 
 type UiState = {
   isSnackBarOpen: boolean;
   snackBarMsg: string;
   isManageListDialogOpen: boolean;
+  isShareListDialogOpen: boolean;
   snackBarSeverity: MsgSeverity;
 };
 
@@ -19,6 +21,7 @@ const slice = createSlice({
     isSnackBarOpen: false,
     snackBarMsg: "",
     isManageListDialogOpen: false,
+    isShareListDialogOpen: false,
   } as UiState,
   reducers: {
     displaySnackBar: (
@@ -35,11 +38,22 @@ const slice = createSlice({
       state.snackBarSeverity = MsgSeverity.Success;
     },
     setIsManageListDialogOpen: (state, action: PayloadAction<boolean>) => {
-      state.isManageListDialogOpen = action.payload
-    }
+      state.isManageListDialogOpen = action.payload;
+    },
+    setIsShareListDialogOpen: (state, action: PayloadAction<boolean>) => {
+      state.isShareListDialogOpen = action.payload;
+    },
   },
 });
 
-export const { displaySnackBar, hideSnackBar, setIsManageListDialogOpen } = slice.actions;
+export const {
+  displaySnackBar,
+  hideSnackBar,
+  setIsManageListDialogOpen,
+  setIsShareListDialogOpen,
+} = slice.actions;
+
+export const selectIsShareListDialogOpen = (state: RootState) =>
+  state.ui.isShareListDialogOpen;
 
 export default slice.reducer;

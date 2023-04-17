@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -7,26 +6,28 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import { useAddListMutation } from "../../../store/api";
-import { useDispatch } from "react-redux";
-import { displaySnackBar, MsgSeverity } from "../../../features/uiSlice";
-import { useAuth } from "../../../hooks/useAuth";
-import { addNewVisitorList } from "../../../features/listsSlice";
-import { ShoppingList } from "../../../store/api";
-import { v4 as uuidv4 } from "uuid";
-import { setSelectedList } from "../../../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  MsgSeverity,
+  displaySnackBar,
+  selectIsShareListDialogOpen,
+  setIsShareListDialogOpen,
+} from "../../../features/uiSlice";
 import { Stack } from "@mui/material";
+import { useShareListMutation } from "../../../store/api";
+import { RootState } from "../../../store/store";
 
 type Inputs = {
   name: string;
 };
 
-export default function NewListDialog() {
-  const [open, setOpen] = React.useState(false);
+export default function ShareListDialog() {
   const dispatch = useDispatch();
-  const auth = useAuth();
-
-  const [addList] = useAddListMutation();
+  const open = useSelector(selectIsShareListDialogOpen);
+  const [shareList] = useShareListMutation();
+  const selectedListId = useSelector(
+    (state: RootState) => state.user.selectedListId
+  );
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -34,55 +35,39 @@ export default function NewListDialog() {
     },
   });
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
+    reset();
+    dispatch(setIsShareListDialogOpen(false));
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    if (auth.user) {
-      try {
-        const payload = await addList(data).unwrap();
-        dispatch(setSelectedList({ id: payload.id }));
-      } catch (err) {
-        console.error("error", err);
-      }
-    } else {
-      const newList: ShoppingList = {
-        id: uuidv4(),
-        ownerId: null,
-        ownerName: "",
-        name: data.name,
-        items: [],
-        sharingIds: [],
-        sharingInviteIds: [],
-        sharingNames: [],
-      };
-      dispatch(addNewVisitorList(newList));
-      dispatch(setSelectedList({ id: newList.id }));
+    console.log("Form submitted. Data:", data);
+    try {
+      await shareList({ listId: selectedListId, userName: data.name }).unwrap();
+      dispatch(
+        displaySnackBar({
+          msg: "Created invitation to share list with user: " + data.name,
+          severity: MsgSeverity.Success,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        displaySnackBar({
+          msg: "Error sharing list with user: " + data.name,
+          severity: MsgSeverity.Error,
+        })
+      );
+    } finally {
+      handleClose();
     }
-    reset();
-    handleClose();
-    dispatch(
-      displaySnackBar({
-        msg: "New list created: " + data.name,
-        severity: MsgSeverity.Success,
-      })
-    );
   };
 
   return (
     <div>
       <Box sx={{ textAlign: "center", margin: "auto", p: 1 }}>
-        <Button variant="contained" color="secondary" onClick={handleClickOpen}>
-          Create new list
-        </Button>
         <Dialog open={open} onClose={handleClose} sx={{ textAlign: "center" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogTitle>Enter new list name</DialogTitle>
+            <DialogTitle>Enter user to share this list with</DialogTitle>
             <DialogContent>
               <Controller
                 name="name"
@@ -97,7 +82,7 @@ export default function NewListDialog() {
                   Cancel
                 </Button>
                 <Button variant="contained" type="submit">
-                  Create
+                  Share
                 </Button>
               </Stack>
             </DialogActions>

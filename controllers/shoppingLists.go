@@ -120,10 +120,13 @@ func (rs ShoppingListsResource) DeleteList(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = models.RemoveList(listId, ownerId)
+	success, err := models.RemoveList(listId, ownerId)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	} else if !success {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
