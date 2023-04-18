@@ -73,7 +73,6 @@ export default function Login() {
         spacing={2}
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* register your input into the hook by invoking the "register" function */}
         <Grid2>
           <TextField
             id="username"

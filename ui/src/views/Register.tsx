@@ -8,7 +8,6 @@ import { useAddUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@mui/material";
 
 type Inputs = {
   username: string;
@@ -22,7 +21,7 @@ export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, control, watch } = useForm<Inputs>();
+  const { handleSubmit, control, watch } = useForm<Inputs>();
 
   const password = React.useRef({});
   password.current = watch("password");

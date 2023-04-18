@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { ShoppingList } from "../../../store/api";
 import { useDispatch } from "react-redux";
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { setSelectedList } from "../../../features/userSlice";
 import { useAuth } from "../../../hooks/useAuth";
@@ -32,6 +32,10 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
     >
       {lists && lists.length > 0 ? (
         lists?.map((list: ShoppingList, idx) => {
+          const checked = list.items.reduce(
+            (acc, item) => (item.isCompleted ? acc + 1 : acc),
+            0
+          );
           return (
             <Card
               key={list.id}
@@ -40,11 +44,20 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
             >
               <CardContent>
                 <Typography>{list.name}</Typography>
-                <Typography>Items: {list.items.length}</Typography>
+                <Typography>
+                  {checked} / {list.items.length}
+                </Typography>
                 {auth.user && (
                   <>
-                    <Typography>Owner: {list.ownerName}</Typography>
-                    <Typography>Shared with: {list.sharingNames}</Typography>
+                    {list.ownerName !== auth.user && (
+                      <Typography>Owner: {list.ownerName}</Typography>
+                    )}
+                    {list.sharingNames.length > 0 && (
+                      <Typography>Shared with: {list.sharingNames}</Typography>
+                    )}
+                    {list.sharingInviteIds?.length > 0 && (
+                      <Typography>Pending share invite</Typography>
+                    )}
                   </>
                 )}
               </CardContent>

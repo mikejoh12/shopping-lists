@@ -41,7 +41,6 @@ export default function ShareListDialog() {
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("Form submitted. Data:", data);
     try {
       await shareList({ listId: selectedListId, userName: data.name }).unwrap();
       dispatch(

@@ -14,7 +14,6 @@ var DB *mongo.Database
 var ShoppingLists, Users *mongo.Collection
 
 func init() {
-	fmt.Println("URI", os.Getenv("MONGO_DB_URI"))
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_DB_URI")))
 	if err != nil {
 		panic(err)
@@ -25,7 +24,7 @@ func init() {
 	}
 	fmt.Println("Successfully connected and pinged.")
 
-	DB = client.Database("go-todo")
-	ShoppingLists = client.Database("go-todo").Collection("shoppingLists")
-	Users = client.Database("go-todo").Collection("users")
+	DB = client.Database("shopping-lists")
+	ShoppingLists = client.Database("shopping-lists").Collection("shoppingLists")
+	Users = client.Database("shopping-lists").Collection("users")
 }

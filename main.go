@@ -14,8 +14,6 @@ import (
 	"github.com/mikejoh12/go-todo/controllers"
 )
 
-// Embeds the React static bundle into the Go binary
-//
 //go:embed static-ui
 var staticFS embed.FS
 
@@ -61,10 +59,6 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 }
 
 func getFileSystem(embedFS embed.FS) http.FileSystem {
-
-	// Get the build subdirectory as the
-	// root directory so that it can be passed
-	// to the http.FileServer
 	fsys, err := fs.Sub(embedFS, "static-ui")
 	if err != nil {
 		panic(err)
