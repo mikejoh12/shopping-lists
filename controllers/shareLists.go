@@ -90,6 +90,11 @@ func (rs ShareListsResource) CreateShareRequest(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	if userId == ownerId {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	err = models.AddShareInvite(ownerId, listId, userId)
 	if err != nil {
 		log.Println(err)
