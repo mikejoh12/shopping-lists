@@ -48,7 +48,6 @@ export default function Login() {
           severity: MsgSeverity.Error,
         })
       );
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -99,11 +98,11 @@ export default function Login() {
           </Button>
         </Grid2>
       </Grid2>
-      { loading &&
-      <Box sx={{ width: "75%", pt: 5, margin: 'auto' }}>
-        <LinearProgress />
-      </Box>
-      }
+      {loading && (
+        <Box sx={{ width: "75%", pt: 5, margin: "auto" }}>
+          <LinearProgress />
+        </Box>
+      )}
     </Box>
   );
 }

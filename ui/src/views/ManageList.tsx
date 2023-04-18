@@ -8,29 +8,7 @@ import LoggedInManageList from "../components/lists/manage/LoggedInManageList";
 import NewVisitorManageList from "../components/lists/manage/NewVisitorManageList";
 
 export default function ManageList() {
-  const { data: shoppingLists } = api.useGetAllListsQuery();
   const auth = useAuth();
-
-  const selectedListId = useSelector(
-    (state: RootState) => state.user.selectedListId
-  );
-
-  const selectedList = shoppingLists?.find((list) => {
-    return String(list.id) === selectedListId;
-  });
-
-  let sortedList: Array<ShoppingListItem> = [];
-  if (selectedList) {
-    sortedList = [...selectedList.items];
-    sortedList.sort(compareFn);
-  }
-
-  function compareFn(a: ShoppingListItem, b: ShoppingListItem) {
-    if (a.isCompleted && !b.isCompleted) {
-      return 1;
-    }
-    return -1;
-  }
 
   return (
     <>

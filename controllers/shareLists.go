@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -40,21 +41,21 @@ func (rs ShareListsResource) GetShareInviteLists(w http.ResponseWriter, r *http.
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	items, err := models.AllShareInviteShoppingLists(ownerId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(items); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -62,8 +63,8 @@ func (rs ShareListsResource) GetShareInviteLists(w http.ResponseWriter, r *http.
 func (rs ShareListsResource) CreateShareRequest(w http.ResponseWriter, r *http.Request) {
 	var s ShareListReq
 	if err := json.NewDecoder(r.Body).Decode(&s); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -71,28 +72,28 @@ func (rs ShareListsResource) CreateShareRequest(w http.ResponseWriter, r *http.R
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	listId, err := primitive.ObjectIDFromHex(s.ListId)
 	if err != nil {
 		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	userId, err := models.GetUserIdByName(s.UserName)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	err = models.AddShareInvite(ownerId, listId, userId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -102,23 +103,23 @@ func (rs ShareListsResource) CreateShareRequest(w http.ResponseWriter, r *http.R
 func (rs ShareListsResource) RespondToShareRequest(w http.ResponseWriter, r *http.Request) {
 	var h HandleShareReq
 	if err := json.NewDecoder(r.Body).Decode(&h); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	userId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	listId, err := primitive.ObjectIDFromHex(h.ListId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -130,8 +131,8 @@ func (rs ShareListsResource) RespondToShareRequest(w http.ResponseWriter, r *htt
 	}
 
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

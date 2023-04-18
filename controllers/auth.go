@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -103,38 +102,40 @@ func GenerateJWT(userId string) (string, error) {
 func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	var c Credentials
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	sr := config.Users.FindOne(context.TODO(), bson.M{"name": c.Username})
 	if sr.Err() != nil {
-		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	var u models.User
 	err := sr.Decode(&u)
 	if err != nil {
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(c.Password))
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	j, err := GenerateJWT(u.ID.Hex())
 	if err != nil {
 		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	cookie := &http.Cookie{
 		Name:   "jwt",
 		Value:  j,
-		MaxAge: 60 * 5,
+		MaxAge: 60 * 60 * 24,
 		Path:   "/",
 	}
 	http.SetCookie(w, cookie)
@@ -163,8 +164,8 @@ func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var c Credentials
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
 
@@ -185,14 +186,14 @@ func (rs AuthResource) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := models.User{
-		ID:            primitive.NewObjectID(),
-		Name:          c.Username,
-		Password:      h,
+		ID:       primitive.NewObjectID(),
+		Name:     c.Username,
+		Password: h,
 	}
 
 	err = models.AddUser(u)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

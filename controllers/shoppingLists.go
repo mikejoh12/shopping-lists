@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -59,21 +59,21 @@ func (rs ShoppingListsResource) GetLists(w http.ResponseWriter, r *http.Request)
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	objId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	items, err := models.AllShoppingLists(objId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(items); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -81,23 +81,23 @@ func (rs ShoppingListsResource) GetLists(w http.ResponseWriter, r *http.Request)
 func (rs ShoppingListsResource) CreateList(w http.ResponseWriter, r *http.Request) {
 	l := struct{ Name string }{}
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	id, err := models.AddNewShoppingList(l.Name, ownerId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -115,15 +115,15 @@ func (rs ShoppingListsResource) DeleteList(w http.ResponseWriter, r *http.Reques
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	success, err := models.RemoveList(listId, ownerId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if !success {
 		w.WriteHeader(http.StatusNotFound)
@@ -137,15 +137,15 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	var lists []ShoppingListReq
 	if err := json.NewDecoder(r.Body).Decode(&lists); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	var dbLists []models.ShoppingList
@@ -169,8 +169,8 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 
 	err = models.AddShoppingLists(dbLists, ownerId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -179,17 +179,16 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 // CheckoutList removes completed items from a shopping list
 func (rs ShoppingListsResource) CheckoutList(w http.ResponseWriter, r *http.Request) {
 	listId := chi.URLParam(r, "id")
-	fmt.Println("Got request for checkout with id", listId)
 	listObjId, err := primitive.ObjectIDFromHex(listId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	err = models.CheckoutList(listObjId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
@@ -198,33 +197,32 @@ func (rs ShoppingListsResource) CheckoutList(w http.ResponseWriter, r *http.Requ
 func (rs ShoppingListsResource) CreateListItem(w http.ResponseWriter, r *http.Request) {
 	var itemData NewListItemReq
 	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	listId, err := primitive.ObjectIDFromHex(itemData.ListId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	err = models.AddListItem(itemData.Name, ownerId, listId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -235,15 +233,15 @@ func (rs ShoppingListsResource) DeleteListItem(w http.ResponseWriter, r *http.Re
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	err = models.RemoveListItem(todoId, ownerId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -256,23 +254,22 @@ func (rs ShoppingListsResource) UpdateListItem(w http.ResponseWriter, r *http.Re
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	ownerId, err := primitive.ObjectIDFromHex(claims["userId"].(string))
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	// Add logic to update db
 	var itemData NewListItemReq
 	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	liId, err := primitive.ObjectIDFromHex(listItemId)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -284,8 +281,8 @@ func (rs ShoppingListsResource) UpdateListItem(w http.ResponseWriter, r *http.Re
 
 	err = models.ModifyListItem(ownerId, li)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

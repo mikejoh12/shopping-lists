@@ -21,10 +21,10 @@ func GetUserIdByName(userName string) (primitive.ObjectID, error) {
 
 func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 	pipeline := mongo.Pipeline{
-		{ // Match the shopping lists where the specified user is either the owner or one of the sharers
+		{ 
 			{Key: "$match", Value: bson.M{"sharingInviteIds": userId}},
 		},
-		{ // Lookup the owner user by ID and add their name to the shopping list document
+		{
 			{Key: "$lookup", Value: bson.M{
 				"from":         "users",
 				"localField":   "ownerId",
@@ -32,12 +32,12 @@ func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, er
 				"as":           "owner",
 			}},
 		},
-		{ // Add a new field "ownerName" to the shopping list document with the owner's name
+		{ 
 			{Key: "$addFields", Value: bson.M{
 				"ownerName": bson.M{"$arrayElemAt": []interface{}{"$owner.name", 0}},
 			}},
 		},
-		{ // Lookup the sharing users by ID and add their names to the shopping list document
+		{ 
 			{Key: "$lookup", Value: bson.M{
 				"from":         "users",
 				"localField":   "sharingIds",
@@ -45,7 +45,7 @@ func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, er
 				"as":           "sharings",
 			}},
 		},
-		{ // Add a new field "sharingNames" to the shopping list document with the sharing users' names
+		{ 
 			{Key: "$addFields", Value: bson.M{
 				"sharingNames": "$sharings.name",
 			}},
@@ -63,24 +63,6 @@ func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, er
 	}
 
 	return &result, nil
-
-	/*
-		cursor, err := config.ShoppingLists.Find(context.TODO(), bson.M{"sharingInviteIds": userId})
-		if err != nil {
-			return nil, err
-		}
-		var results []ShoppingList
-
-		if err = cursor.All(context.TODO(), &results); err != nil {
-			return nil, err
-		}
-
-		for _, result := range results {
-			cursor.Decode(&result)
-		}
-
-		return &results, nil
-	*/
 }
 
 func ShareListWithUser(listId, userId primitive.ObjectID) (bool, error) {

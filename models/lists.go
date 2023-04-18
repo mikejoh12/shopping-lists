@@ -27,16 +27,12 @@ type ShoppingList struct {
 	SharingNames     []string             `json:"sharingNames" bson:"sharingNames"`
 }
 
-type User struct {
-	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name     string             `json:"name"`
-	Password string             `json:"password"`
-}
+
 
 func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 
 	pipeline := mongo.Pipeline{
-		{ // Match the shopping lists where the specified user is either the owner or one of the sharers
+		{ 
 			{Key: "$match", Value: bson.M{
 				"$or": []interface{}{
 					bson.M{"ownerId": userId},
@@ -44,7 +40,7 @@ func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 				},
 			}},
 		},
-		{ // Lookup the owner user by ID and add their name to the shopping list document
+		{
 			{Key: "$lookup", Value: bson.M{
 				"from":         "users",
 				"localField":   "ownerId",
@@ -52,12 +48,12 @@ func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 				"as":           "owner",
 			}},
 		},
-		{ // Add a new field "ownerName" to the shopping list document with the owner's name
+		{
 			{Key: "$addFields", Value: bson.M{
 				"ownerName": bson.M{"$arrayElemAt": []interface{}{"$owner.name", 0}},
 			}},
 		},
-		{ // Lookup the sharing users by ID and add their names to the shopping list document
+		{ 
 			{Key: "$lookup", Value: bson.M{
 				"from":         "users",
 				"localField":   "sharingIds",
@@ -65,7 +61,7 @@ func AllShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 				"as":           "sharings",
 			}},
 		},
-		{ // Add a new field "sharingNames" to the shopping list document with the sharing users' names
+		{ 
 			{Key: "$addFields", Value: bson.M{
 				"sharingNames": "$sharings.name",
 			}},
@@ -230,13 +226,4 @@ func RemoveList(listId string, ownerId primitive.ObjectID) (success bool, err er
 	}
 
 	return true, nil
-}
-
-func AddUser(u User) error {
-	_, err := config.Users.InsertOne(context.TODO(), u)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

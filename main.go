@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
@@ -31,10 +30,6 @@ func main() {
 
 	FileServer(r, "/", getFileSystem(staticFS))
 
-	r.Get("/api", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Api is up and running!")
-	})
-
 	r.Mount("/api/auth", controllers.AuthResource{}.Routes())
 	r.Mount("/api/lists", controllers.ShoppingListsResource{}.Routes())
 	r.Mount("/api/share-lists", controllers.ShareListsResource{}.Routes())
@@ -52,7 +47,7 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 	}
 
 	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
 		path += "/"
 	}
 	path += "*"
