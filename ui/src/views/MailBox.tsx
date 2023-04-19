@@ -49,7 +49,7 @@ export default function MailBox() {
                 <Stack
                   direction="row"
                   spacing={1}
-                  sx={{ justifyContent: "center" }}
+                  sx={{ justifyContent: "center", p: 2 }}
                 >
                   <Button
                     variant="contained"

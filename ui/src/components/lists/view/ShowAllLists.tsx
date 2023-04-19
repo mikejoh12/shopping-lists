@@ -43,7 +43,7 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
               onClick={() => handleListClick(list.id)}
             >
               <CardContent>
-                <Typography>{list.name}</Typography>
+                <Typography sx={{fontWeight: 'bold'}}>{list.name}</Typography>
                 <Typography>
                   {checked} / {list.items.length}
                 </Typography>
@@ -52,7 +52,7 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
                     {list.ownerName !== auth.user && (
                       <Typography>Owner: {list.ownerName}</Typography>
                     )}
-                    {list.sharingNames.length > 0 && (
+                    {list.ownerName === auth.user && list.sharingNames.length > 0 && (
                       <Typography>Shared with: {list.sharingNames}</Typography>
                     )}
                     {list.sharingInviteIds?.length > 0 && (
