@@ -49,10 +49,10 @@ export default function ShowAllLists({ lists }: ListSelectProps) {
                 </Typography>
                 {auth.user && (
                   <>
-                    {list.ownerName !== auth.user && (
+                    {list.ownerName !== auth.user.name && (
                       <Typography>Owner: {list.ownerName}</Typography>
                     )}
-                    {list.ownerName === auth.user && list.sharingNames.length > 0 && (
+                    {list.ownerName === auth.user.name && list.sharingNames.length > 0 && (
                       <Typography>Shared with: {list.sharingNames}</Typography>
                     )}
                     {list.sharingInviteIds?.length > 0 && (

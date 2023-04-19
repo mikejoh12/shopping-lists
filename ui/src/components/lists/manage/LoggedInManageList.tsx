@@ -16,6 +16,7 @@ import { displaySnackBar, MsgSeverity } from "../../../features/uiSlice";
 import { ShoppingList } from "./ShoppingList";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ShareListDialog from "./ShareListDialog";
+import { useAuth } from "../../../hooks/useAuth";
 
 type Inputs = {
   newItem: string;
@@ -24,6 +25,7 @@ type Inputs = {
 export default function ShoppingLists() {
   const { data: shoppingLists, isLoading } = api.useGetAllListsQuery();
   const [addListItem] = useAddListItemMutation();
+  const auth = useAuth();
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
@@ -125,7 +127,9 @@ export default function ShoppingLists() {
           </Typography>
         ) : (
           <>
-            <ManageListDialog />
+            <ManageListDialog
+              showListOwnerButtons={selectedList?.ownerId === auth.user.userId}
+            />
             <ShareListDialog />
             <ShoppingList
               list={sortedList}

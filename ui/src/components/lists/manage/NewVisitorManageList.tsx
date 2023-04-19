@@ -107,7 +107,7 @@ export default function NewVisitorShoppingLists() {
           </Typography>
         ) : (
           <>
-            <ManageListDialog />
+            <ManageListDialog showListOwnerButtons={true} />
             <ShoppingList
               list={sortedList}
               name={selectedList ? selectedList.name : ""}

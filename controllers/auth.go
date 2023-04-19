@@ -142,7 +142,8 @@ func (rs AuthResource) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(struct {
 		Username string `json:"username"`
-	}{u.Name})
+		UserId   string `json:"userId"`
+	}{u.Name, u.ID.Hex()})
 }
 
 // Logout deletes the cookie containing the JWT

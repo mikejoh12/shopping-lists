@@ -31,7 +31,7 @@ export default function Login() {
     try {
       setLoading(true);
       const user = await loginUser(data).unwrap();
-      dispatch(setCredentials(user.username));
+      dispatch(setCredentials(user));
       reset();
       navigate("/");
       dispatch(

@@ -21,7 +21,7 @@ func GetUserIdByName(userName string) (primitive.ObjectID, error) {
 
 func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, error) {
 	pipeline := mongo.Pipeline{
-		{ 
+		{
 			{Key: "$match", Value: bson.M{"sharingInviteIds": userId}},
 		},
 		{
@@ -32,12 +32,12 @@ func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, er
 				"as":           "owner",
 			}},
 		},
-		{ 
+		{
 			{Key: "$addFields", Value: bson.M{
 				"ownerName": bson.M{"$arrayElemAt": []interface{}{"$owner.name", 0}},
 			}},
 		},
-		{ 
+		{
 			{Key: "$lookup", Value: bson.M{
 				"from":         "users",
 				"localField":   "sharingIds",
@@ -45,7 +45,7 @@ func AllShareInviteShoppingLists(userId primitive.ObjectID) (*[]ShoppingList, er
 				"as":           "sharings",
 			}},
 		},
-		{ 
+		{
 			{Key: "$addFields", Value: bson.M{
 				"sharingNames": "$sharings.name",
 			}},
@@ -102,17 +102,17 @@ func DeclineShareListWithUser(listId, userId primitive.ObjectID) (bool, error) {
 	return true, nil
 }
 
-func AddShareInvite(ownerId, listId, userId primitive.ObjectID) error {
+func AddShareInvite(ownerId, listId, userId primitive.ObjectID) (bool, error) {
 
 	update := bson.M{
 		"$addToSet": bson.M{
 			"sharingInviteIds": userId,
 		},
 	}
-	_, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": ownerId, "_id": listId}, update)
+	result, err := config.ShoppingLists.UpdateOne(context.TODO(), bson.M{"ownerId": ownerId, "_id": listId}, update)
 
-	if err != nil {
-		return err
+	if err != nil || result.ModifiedCount != 1 {
+		return false, err
 	}
-	return nil
+	return true, nil
 }

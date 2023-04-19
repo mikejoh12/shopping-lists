@@ -90,13 +90,14 @@ func (rs ShareListsResource) CreateShareRequest(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// You are not allowed to share list with yourself
 	if userId == ownerId {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = models.AddShareInvite(ownerId, listId, userId)
-	if err != nil {
+	success, err := models.AddShareInvite(ownerId, listId, userId)
+	if !success || err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

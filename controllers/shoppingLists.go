@@ -151,10 +151,13 @@ func (rs ShoppingListsResource) AddLists(w http.ResponseWriter, r *http.Request)
 	var dbLists []models.ShoppingList
 	for _, l := range lists {
 		newList := models.ShoppingList{
-			ID:      primitive.NewObjectID(),
-			OwnerId: ownerId,
-			Name:    l.Name,
-			Items:   make([]models.ListItem, 0),
+			ID:               primitive.NewObjectID(),
+			OwnerId:          ownerId,
+			Name:             l.Name,
+			Items:            make([]models.ListItem, 0),
+			SharingIds:       make([]primitive.ObjectID, 0),
+			SharingInviteIds: make([]primitive.ObjectID, 0),
+			SharingNames:     make([]string, 0),
 		}
 		for _, item := range l.Items {
 			newItem := models.ListItem{

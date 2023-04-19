@@ -9,7 +9,7 @@ export default function ViewLists() {
 
   return (
     <Grid container direction="column" alignContent="center" sx={{ p: 2 }}>
-      {auth.user ? <LoggedInLists /> : <NewVisitorShoppingLists />}
+      {auth.user.name ? <LoggedInLists /> : <NewVisitorShoppingLists />}
       <NewListDialog />
     </Grid>
   );

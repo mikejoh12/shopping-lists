@@ -1,8 +1,5 @@
 import Button from "@mui/material/Button";
-import {
-  IconButton,
-  Badge,
-} from "@mui/material";
+import { IconButton, Badge } from "@mui/material";
 import { api, useLogoutUserMutation } from "../store/api";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -19,7 +16,7 @@ export const HeaderLoggedInIcons = () => {
   function handleLogout(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
     logoutUser();
-    dispatch(setCredentials(null));
+    dispatch(setCredentials({ username: null, userId: null }));
     dispatch(setSelectedList({ id: "" }));
     dispatch(api.util.resetApiState());
     navigate("/");

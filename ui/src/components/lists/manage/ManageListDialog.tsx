@@ -25,7 +25,13 @@ import {
 } from "../../../features/listsSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function ManageListDialog() {
+interface ManageListDialogProps {
+  showListOwnerButtons: boolean;
+}
+
+export default function ManageListDialog({
+  showListOwnerButtons,
+}: ManageListDialogProps) {
   const dispatch = useDispatch();
   const auth = useAuth();
   const navigate = useNavigate();
@@ -105,14 +111,16 @@ export default function ManageListDialog() {
             <Button variant="contained" onClick={handleDeletePurchasedItems}>
               Check Out
             </Button>
-            {auth.user && (
+            {showListOwnerButtons && auth.user && (
               <Button variant="contained" onClick={handleShareList}>
                 Share List
               </Button>
             )}
-            <Button variant="contained" onClick={handleDeleteList}>
-              Delete List
-            </Button>
+            {showListOwnerButtons && (
+              <Button variant="contained" onClick={handleDeleteList}>
+                Delete List
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       </Box>

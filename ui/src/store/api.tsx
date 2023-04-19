@@ -36,6 +36,7 @@ export interface LoginRequest {
 
 export interface UserResponse {
   username: string;
+  userId: string;
 }
 
 export interface RegisterUserRequest {
@@ -61,7 +62,7 @@ const baseQueryWithLogout: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
-    api.dispatch(setCredentials(null));
+    api.dispatch(setCredentials({username: null, userId: null}));
   }
   return result;
 };
