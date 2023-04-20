@@ -21,7 +21,7 @@ export const Footer = () => {
               color: "black",
             }}
           >
-            Shopping Lists
+            GoShopping
           </Typography>
           <IconButton
             onClick={() =>

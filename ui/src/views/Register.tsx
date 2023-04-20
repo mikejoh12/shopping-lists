@@ -8,6 +8,7 @@ import { useAddUserMutation } from "../store/api";
 import { useDispatch } from "react-redux";
 import { displaySnackBar, MsgSeverity } from "../features/uiSlice";
 import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
 
 type Inputs = {
   username: string;
@@ -53,7 +54,7 @@ export default function Register() {
   };
 
   return (
-    <>
+    <Box sx={{pt: 2}}>
       <Typography
         variant="h3"
         component="div"
@@ -156,6 +157,6 @@ export default function Register() {
           </Button>
         </Grid2>
       </Grid2>
-    </>
+    </Box>
   );
 }

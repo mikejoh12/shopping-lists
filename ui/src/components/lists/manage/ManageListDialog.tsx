@@ -53,7 +53,7 @@ export default function ManageListDialog({
 
   async function handleDeletePurchasedItems() {
     try {
-      if (auth.user) {
+      if (auth.user.name) {
         await checkoutList(selectedListId).unwrap();
       } else {
         dispatch(removeCheckedItems({ listId: selectedListId }));
@@ -72,7 +72,7 @@ export default function ManageListDialog({
   async function handleDeleteList() {
     dispatch(setSelectedList({ id: "" }));
     try {
-      if (auth.user) {
+      if (auth.user.name) {
         await deleteList(selectedListId).unwrap();
       } else {
         dispatch(removeNewVisitorList({ id: selectedListId }));

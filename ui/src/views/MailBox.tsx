@@ -35,10 +35,18 @@ export default function MailBox() {
         minWidth: 120,
         maxWidth: 400,
         margin: "auto",
-        p: 2,
+        pt: 3,
         textAlign: "center",
       }}
     >
+      <Typography
+        variant="h3"
+        component="div"
+        gutterBottom
+        textAlign={"center"}
+      >
+        List Invites
+      </Typography>
       {lists && lists.length > 0 ? (
         lists?.map((list, idx) => {
           return (
@@ -69,7 +77,7 @@ export default function MailBox() {
           );
         })
       ) : (
-        <Typography>No list invites found</Typography>
+        <Typography>No invites found</Typography>
       )}
     </Box>
   );

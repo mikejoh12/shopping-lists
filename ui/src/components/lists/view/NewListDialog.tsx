@@ -43,7 +43,7 @@ export default function NewListDialog() {
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    if (auth.user) {
+    if (auth.user.name) {
       try {
         const payload = await addList(data).unwrap();
         dispatch(setSelectedList({ id: payload.id }));

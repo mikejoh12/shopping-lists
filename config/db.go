@@ -24,7 +24,7 @@ func init() {
 	}
 	fmt.Println("Successfully connected and pinged.")
 
-	DB = client.Database("shopping-lists")
-	ShoppingLists = client.Database("shopping-lists").Collection("shoppingLists")
-	Users = client.Database("shopping-lists").Collection("users")
+	DB = client.Database("go-shopping")
+	ShoppingLists = client.Database("go-shopping").Collection("shoppingLists")
+	Users = client.Database("go-shopping").Collection("users")
 }

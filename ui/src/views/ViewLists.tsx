@@ -8,7 +8,11 @@ export default function ViewLists() {
   const auth = useAuth();
 
   return (
-    <Grid container direction="column" alignContent="center" sx={{ p: 2 }}>
+    <Grid
+      container
+      direction="column"
+      alignContent="center"
+    >
       {auth.user.name ? <LoggedInLists /> : <NewVisitorShoppingLists />}
       <NewListDialog />
     </Grid>

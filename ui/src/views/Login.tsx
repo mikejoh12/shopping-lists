@@ -54,7 +54,7 @@ export default function Login() {
   };
 
   return (
-    <Box>
+    <Box sx={{pt: 2}}>
       <Typography
         variant="h3"
         component="div"

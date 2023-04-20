@@ -32,7 +32,7 @@ export const Header = () => {
                 fontStyle: "italic",
               }}
             >
-              Shopping Lists
+              GoShopping
             </Typography>
             {selectedUser ? (
               <HeaderLoggedInIcons />
