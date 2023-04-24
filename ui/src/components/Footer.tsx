@@ -4,7 +4,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 export const Footer = () => {
   return (
     <>
-      <Box>
+      <Box sx={{ backgroundColor: "black", p: 2 }}>
         <Divider variant="middle" />
         <Stack
           direction="row"
@@ -18,12 +18,13 @@ export const Footer = () => {
             sx={{
               textDecoration: "none",
               boxShadow: "none",
-              color: "black",
+              color: "white",
             }}
           >
             GoShopping
           </Typography>
           <IconButton
+            color="primary"
             onClick={() =>
               window.open("https://github.com/mikejoh12/go-todo", "_blank")
             }
@@ -31,6 +32,17 @@ export const Footer = () => {
             <GitHubIcon />
           </IconButton>
         </Stack>
+        <Typography
+            variant="body1"
+            sx={{
+              textDecoration: "none",
+              boxShadow: "none",
+              color: "white",
+              textAlign: "center"
+            }}
+          >
+            A project built in Go, TypeScript (React), and MongoDB
+          </Typography>
       </Box>
     </>
   );

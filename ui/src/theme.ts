@@ -9,6 +9,9 @@ let theme = createTheme({
     secondary: {
       main: "#606FC7",
     },
+    background: {
+      default: "#ffffff",
+    },
   },
 });
 

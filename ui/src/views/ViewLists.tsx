@@ -12,6 +12,7 @@ export default function ViewLists() {
       container
       direction="column"
       alignContent="center"
+      sx={{pb: 2}}
     >
       {auth.user.name ? <LoggedInLists /> : <NewVisitorShoppingLists />}
       <NewListDialog />

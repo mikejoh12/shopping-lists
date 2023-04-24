@@ -54,7 +54,7 @@ export default function Login() {
   };
 
   return (
-    <Box sx={{pt: 2}}>
+    <Box sx={{ pt: 2 }}>
       <Typography
         variant="h3"
         component="div"
@@ -76,7 +76,7 @@ export default function Login() {
         <Grid2>
           <TextField
             id="username"
-            label="Username"
+            label="Email"
             variant="outlined"
             {...register("username", { required: true })}
           />
